@@ -129,3 +129,11 @@ AgentServer is listening on port 3000
 [2025-06-05 15:45:26] INFO: [36m2. Set KNOWLEDGE_PATH environment variable to your documents folder[39m
 [2025-06-05 15:45:26] WARN: [36mKnowledge path does not exist: /Volumes/Code/Projects/AI/blockSeq/packages/cli/docs[39m
 [2025-06-05 15:45:39] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+[2025-06-05 15:57:58] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+[2025-06-05 15:58:00] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+[2025-06-05 15:58:01] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+[2025-06-05 15:58:02] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+[2025-06-05 15:58:09] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+error: script "start" was terminated by signal SIGTERM (Polite quit request)
+error: script "start" was terminated by signal SIGTERM (Polite quit request)
+ ERROR  run failed: command  exited (1)

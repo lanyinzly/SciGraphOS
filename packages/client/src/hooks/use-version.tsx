@@ -29,10 +29,13 @@ export default function useVersion() {
       const data = await response.json();
       const latestVersion = data.tag_name;
       return latestVersion;
-    } catch {}
+    } catch { }
   }
 
   const compareVersion = async () => {
+    // 禁用版本检查 - 早期返回
+    return;
+
     try {
       const latestVersion = await getLatestRelease('elizaos/eliza');
       const thisVersion = info?.version;

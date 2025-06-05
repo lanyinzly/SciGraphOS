@@ -61,29 +61,23 @@ export const excelProvider: Provider = {
                     continue;
                 }
 
-                // Extract text content
-                const textContent = await excelService.extractTextFromExcel(filePath);
+                // Generate AI-friendly summary with intelligent analysis
+                const aiSummary = await excelService.generateAIFriendlySummary(filePath);
 
-                // Get structured data
-                const structuredData = await excelService.extractStructuredDataFromExcel(filePath);
-
-                // Get file info
+                // Get file info for metadata
                 const fileInfo = await excelService.getExcelInfo(filePath);
 
-                // Format for AI consumption
-                extractedContent += `\n📊 Excel File Analysis: ${fileInfo.fileName}\n`;
-                extractedContent += `📈 ${fileInfo.sheetCount} sheet(s), ${Math.round(fileInfo.fileSize / 1024)}KB\n`;
-                extractedContent += `\n${structuredData.summary}\n`;
-                extractedContent += `\n--- Content ---\n${textContent}\n`;
-                extractedContent += `\n--- End of ${fileInfo.fileName} ---\n`;
+                // Use the AI-friendly summary as the main content
+                extractedContent += `\n${aiSummary}\n`;
+                extractedContent += `\n--- End of ${fileInfo.fileName} Analysis ---\n`;
 
                 processedFiles.push({
                     fileName: fileInfo.fileName,
                     fileSize: fileInfo.fileSize,
                     sheetCount: fileInfo.sheetCount,
                     sheetNames: fileInfo.sheetNames,
-                    summary: structuredData.summary,
-                    hasContent: textContent.length > 0
+                    summary: `AI-enhanced analysis with ${fileInfo.sheetCount} sheets`,
+                    hasContent: aiSummary.length > 0
                 });
 
             } catch (error) {
@@ -145,7 +139,7 @@ function getFilePathFromAttachment(attachment: any): string | null {
             if (attachment.url.startsWith('/media/uploads/')) {
                 // Convert URL to actual file path (service runs from packages/cli/)
                 const relativePath = attachment.url.replace('/media/uploads/', '');
-                return `data/uploads/${relativePath}`;
+                return `packages/cli/data/uploads/${relativePath}`;
             }
 
             // Handle full URLs - would need to download first

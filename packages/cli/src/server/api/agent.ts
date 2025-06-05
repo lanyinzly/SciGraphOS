@@ -363,8 +363,8 @@ export function agentRouter(
               inReplyTo: userMessageMemory.id,
               ...(responseContent.providers &&
                 responseContent.providers.length > 0 && {
-                  providers: responseContent.providers,
-                }),
+                providers: responseContent.providers,
+              }),
             },
             roomId: roomId,
             worldId,
@@ -1779,9 +1779,9 @@ export function agentRouter(
       const cleanMemories = includeEmbedding
         ? memories
         : memories.map((memory) => ({
-            ...memory,
-            embedding: undefined,
-          }));
+          ...memory,
+          embedding: undefined,
+        }));
 
       res.json({
         success: true,
@@ -1841,9 +1841,9 @@ export function agentRouter(
     const cleanMemories = includeEmbedding
       ? memories
       : memories.map((memory) => ({
-          ...memory,
-          embedding: undefined,
-        }));
+        ...memory,
+        embedding: undefined,
+      }));
 
     res.json({
       success: true,
@@ -1939,7 +1939,7 @@ export function agentRouter(
       return;
     }
 
-    // Check if it's a valid media file (image or video)
+    // Check if it's a valid media file (image, video, or Excel)
     const validImageTypes = [
       'image/jpeg',
       'image/png',
@@ -1956,14 +1956,18 @@ export function agentRouter(
       'video/mkv',
       'video/quicktime',
     ];
-    const allValidTypes = [...validImageTypes, ...validVideoTypes];
+    const validExcelTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+      'application/vnd.ms-excel', // .xls
+    ];
+    const allValidTypes = [...validImageTypes, ...validVideoTypes, ...validExcelTypes];
 
     if (!allValidTypes.includes(mediaFile.mimetype)) {
       res.status(400).json({
         success: false,
         error: {
           code: 'INVALID_FILE_TYPE',
-          message: 'File must be an image or video',
+          message: 'File must be an image, video, or Excel file (.xlsx/.xls)',
         },
       });
       return;
@@ -1971,8 +1975,76 @@ export function agentRouter(
 
     try {
       const isImage = validImageTypes.includes(mediaFile.mimetype);
+      const isExcel = validExcelTypes.includes(mediaFile.mimetype);
 
-      if (isImage) {
+      if (isExcel) {
+        // Handle Excel file upload and processing
+        logger.debug('[EXCEL UPLOAD] Processing Excel file');
+
+        try {
+          // Import Excel service for processing
+          const ExcelService = await import('@elizaos/plugin-excel').then(m => m.ExcelService);
+          const excelService = new ExcelService();
+
+          // Process Excel file to extract data
+          const excelData = await excelService.processExcelFile(mediaFile.path);
+
+          // Generate summary and structured data
+          const summary = await excelService.generateSummary(excelData);
+
+          logger.debug(`[EXCEL UPLOAD] Processed Excel file with ${excelData.sheets?.length || 0} sheets`);
+
+          // Store the file locally (Excel files are typically used for data analysis, not sharing)
+          const fileUrl = `http://localhost:${req.get('host')?.split(':')[1] || '3000'}/media/uploads/${agentId}/${mediaFile.filename}`;
+
+          res.json({
+            success: true,
+            data: {
+              url: fileUrl,
+              type: 'excel',
+              filename: mediaFile.filename,
+              originalName: mediaFile.originalname,
+              size: mediaFile.size,
+              excelData: {
+                sheets: excelData.sheets?.map(sheet => ({
+                  name: sheet.name,
+                  rowCount: sheet.data?.length || 0,
+                  columnCount: sheet.headers?.length || 0,
+                  headers: sheet.headers
+                })),
+                summary: summary,
+                totalSheets: excelData.sheets?.length || 0,
+                processed: true
+              }
+            },
+          });
+
+          logger.info(`[EXCEL UPLOAD] Successfully processed Excel file: ${mediaFile.filename}`);
+          return;
+
+        } catch (excelError) {
+          logger.error('[EXCEL UPLOAD] Failed to process Excel file:', excelError);
+
+          // Fallback to basic file upload without processing
+          const fileUrl = `http://localhost:${req.get('host')?.split(':')[1] || '3000'}/media/uploads/${agentId}/${mediaFile.filename}`;
+
+          res.json({
+            success: true,
+            data: {
+              url: fileUrl,
+              type: 'excel',
+              filename: mediaFile.filename,
+              originalName: mediaFile.originalname,
+              size: mediaFile.size,
+              warning: 'Excel file uploaded but could not be processed. File is available for download.',
+              processed: false
+            },
+          });
+
+          logger.warn(`[EXCEL UPLOAD] Excel file uploaded without processing: ${mediaFile.filename}`);
+          return;
+        }
+      } else if (isImage) {
         // Upload image to Catbox.moe with compression and timeout handling
         logger.debug('[MEDIA UPLOAD] Processing image for Catbox.moe upload');
 
