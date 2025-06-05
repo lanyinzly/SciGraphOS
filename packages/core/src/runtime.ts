@@ -188,15 +188,15 @@ export class AgentRuntime implements IAgentRuntime {
         // Create a no-op implementation
         this.instrumentationService = {
           getTracer: () => null,
-          start: async () => {},
-          stop: async () => {},
+          start: async () => { },
+          stop: async () => { },
           isStarted: () => false,
           isEnabled: () => false,
           name: 'INSTRUMENTATION',
           capabilityDescription: 'Disabled instrumentation service (fallback)',
           instrumentationConfig: { enabled: false },
           getMeter: () => null,
-          flush: async () => {},
+          flush: async () => { },
         } as any;
         this.tracer = null;
       }
@@ -212,17 +212,17 @@ export class AgentRuntime implements IAgentRuntime {
   ): Promise<T> {
     if (!this.instrumentationService?.isEnabled?.() || !this.tracer) {
       const mockSpan = {
-        setStatus: () => {},
-        setAttribute: () => {},
-        setAttributes: () => {},
-        recordException: () => {},
-        addEvent: () => {},
-        end: () => {},
+        setStatus: () => { },
+        setAttribute: () => { },
+        setAttributes: () => { },
+        recordException: () => { },
+        addEvent: () => { },
+        end: () => { },
         isRecording: () => false,
         spanContext: () => ({ traceId: '', spanId: '', traceFlags: 0 }),
-        updateName: () => {},
-        addLink: () => {},
-        addLinks: () => {},
+        updateName: () => { },
+        addLink: () => { },
+        addLinks: () => { },
       } as unknown as Span;
       return fn(mockSpan);
     }
@@ -248,22 +248,22 @@ export class AgentRuntime implements IAgentRuntime {
     });
   }
 
-  endSpan(ctx: Context | undefined, name: string): void {}
+  endSpan(ctx: Context | undefined, name: string): void { }
 
   startActiveSpan(name: string, options: any = {}): Span {
     if (!this.instrumentationService?.isEnabled?.() || !this.tracer) {
       return {
-        setStatus: () => {},
-        setAttribute: () => {},
-        setAttributes: () => {},
-        recordException: () => {},
-        addEvent: () => {},
-        end: () => {},
+        setStatus: () => { },
+        setAttribute: () => { },
+        setAttributes: () => { },
+        recordException: () => { },
+        addEvent: () => { },
+        end: () => { },
         isRecording: () => false,
         spanContext: () => ({ traceId: '', spanId: '', traceFlags: 0 }),
-        updateName: () => {},
-        addLink: () => {},
-        addLinks: () => {},
+        updateName: () => { },
+        addLink: () => { },
+        addLinks: () => { },
       } as unknown as Span;
     }
     return this.tracer.startSpan(name, options);
@@ -1528,7 +1528,7 @@ export class AgentRuntime implements IAgentRuntime {
       // Log input parameters (keep debug log if useful)
       this.logger.debug(
         `[useModel] ${modelKey} input: ` +
-          JSON.stringify(params, safeReplacer(), 2).replace(/\\n/g, '\n')
+        JSON.stringify(params, safeReplacer(), 2).replace(/\\n/g, '\n')
       );
       let paramsWithRuntime: any;
       if (
@@ -1564,9 +1564,8 @@ export class AgentRuntime implements IAgentRuntime {
         this.logger.debug(
           `[useModel] ${modelKey} output (took ${Number(elapsedTime.toFixed(2)).toLocaleString()}ms):`,
           Array.isArray(response)
-            ? `${JSON.stringify(response.slice(0, 5))}...${JSON.stringify(response.slice(-5))} (${
-                response.length
-              } items)`
+            ? `${JSON.stringify(response.slice(0, 5))}...${JSON.stringify(response.slice(-5))} (${response.length
+            } items)`
             : JSON.stringify(response, safeReplacer(), 2).replace(/\\n/g, '\n')
         );
         this.adapter.log({
