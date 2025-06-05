@@ -1,0 +1,52 @@
+{
+    "name": "@elizaos/plugin-excel",
+    "version": "1.0.0",
+    "description": "Excel file processing plugin for ElizaOS",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "lint": "eslint src --ext .ts",
+        "test": "vitest"
+    },
+    "keywords": [
+        "eliza",
+        "excel",
+        "xlsx",
+        "spreadsheet",
+        "file-processing",
+        "ai-agent"
+    ],
+    "dependencies": {
+        "@elizaos/core": "workspace:*",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@types/node": "^22.8.6",
+        "tsup": "^8.3.5",
+        "typescript": "^5.6.3",
+        "vitest": "^2.1.4"
+    },
+    "tsup": {
+        "entry": [
+            "src/index.ts"
+        ],
+        "outDir": "dist",
+        "sourcemap": true,
+        "clean": true,
+        "format": [
+            "esm"
+        ],
+        "external": [
+            "@elizaos/core",
+            "fs",
+            "path",
+            "xlsx"
+        ]
+    },
+    "files": [
+        "dist"
+    ]
+}
