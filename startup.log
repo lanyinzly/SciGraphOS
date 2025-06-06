@@ -4,7 +4,7 @@ turbo 2.5.4
 • Packages in scope: @elizaos/cli
 • Running start in 1 packages
 • Remote caching disabled
-cache bypass, force executing 581d80a3c293e48b
+cache bypass, force executing f63668a31c801696
 $ tsup
 CLI Building entry: src/index.ts, src/specs/v1/index.ts, src/specs/v2/index.ts
 CLI Using tsconfig: tsconfig.build.json
@@ -14,19 +14,19 @@ CLI Target: node18
 CLI Cleaning output folder
 ESM Build start
 ESM dist/index.js          3.29 KB
-ESM dist/specs/v2/index.js 4.56 KB
 ESM dist/specs/v1/index.js 1.36 KB
+ESM dist/specs/v2/index.js 4.56 KB
 ESM dist/chunk-HRFT5KDK.js 393.26 KB
-ESM ⚡️ Build success in 37ms
+ESM ⚡️ Build success in 30ms
 DTS Build start
-DTS ⚡️ Build success in 2410ms
+DTS ⚡️ Build success in 2495ms
 DTS dist/index.d.ts          61.36 KB
 DTS dist/specs/v1/index.d.ts 2.07 KB
 DTS dist/specs/v2/index.d.ts 4.45 KB
 DTS dist/index-Cy9ZgQIe.d.ts 59.70 KB
 DTS dist/index-DVKkCFlY.d.ts 135.06 KB
 DTS dist/types-DzoA9aTJ.d.ts 73.13 KB
-cache bypass, force executing 4299b00f4b101a18
+cache bypass, force executing 10911050badc4c9a
 $ bun run build && node dist/index.js start
 $ bun x tsup && bun run src/scripts/copy-client-dist.ts && bun run src/scripts/copy-templates.ts
 CLI Building entry: src/index.ts, src/commands/agent.ts, src/commands/create.ts, src/commands/dev.ts, src/commands/env.ts, src/commands/plugins.ts, src/commands/publish.ts, src/commands/setup-monorepo.ts, src/commands/start.ts, src/commands/tee.ts, src/commands/test.ts, src/commands/update.ts
@@ -37,43 +37,44 @@ CLI Target: esnext
 CLI Cleaning output folder
 ESM Build start
 DTS Build start
-ESM dist/commands/tee.js            230.00 B
-ESM dist/prompts-6OUGOC7R.js        211.00 B
-ESM dist/commands/update.js         386.00 B
-ESM dist/commands/start.js          519.00 B
 ESM dist/commands/test.js           515.00 B
-ESM dist/chunk-75USXJKU.js          2.73 KB
-ESM dist/chunk-ALPALVBA.js          85.74 KB
-ESM dist/chunk-EO2G5BC2.js          27.25 KB
-ESM dist/fileFromPath-YVUU5P27.js   5.18 KB
-ESM dist/index.js                   3.22 KB
-ESM dist/commands/create.js         346.00 B
-ESM dist/chunk-67L4I5S7.js          2.48 KB
-ESM dist/chunk-ZZYAGOPK.js          14.90 KB
-ESM dist/chunk-BDPGXNHU.js          5.78 KB
-ESM dist/commands/agent.js          392.00 B
+ESM dist/commands/start.js          519.00 B
 ESM dist/registry-NUHQ52FY.js       1.25 KB
-ESM dist/chunk-UGZEOIQ4.js          8.59 KB
+ESM dist/prompts-6OUGOC7R.js        211.00 B
+ESM dist/fileFromPath-YVUU5P27.js   5.18 KB
+ESM dist/commands/update.js         386.00 B
+ESM dist/index.js                   3.22 KB
+ESM dist/chunk-ALPALVBA.js          85.74 KB
+ESM dist/chunk-75USXJKU.js          2.73 KB
+ESM dist/chunk-YSU7OYRG.js          27.25 KB
+ESM dist/chunk-67L4I5S7.js          2.48 KB
+ESM dist/commands/create.js         346.00 B
+ESM dist/chunk-ZZYAGOPK.js          14.90 KB
+ESM dist/commands/agent.js          392.00 B
+ESM dist/chunk-BDPGXNHU.js          5.78 KB
 ESM dist/commands/dev.js            340.00 B
+ESM dist/chunk-UGZEOIQ4.js          8.59 KB
 ESM dist/commands/env.js            381.00 B
 ESM dist/chunk-DE6SL3IS.js          13.92 KB
 ESM dist/commands/plugins.js        500.00 B
-ESM dist/chunk-AJAT2C4T.js          23.19 KB
 ESM dist/commands/publish.js        379.00 B
+ESM dist/chunk-AJAT2C4T.js          23.19 KB
+ESM dist/commands/tee.js            230.00 B
 ESM dist/chunk-DGPLY2NQ.js          14.96 KB
 ESM dist/commands/setup-monorepo.js 329.00 B
-ESM dist/chunk-BZIUA2KE.js          3.58 KB
-ESM dist/chunk-567UPUC7.js          2.15 KB
 ESM dist/chunk-YZKDZR3F.js          234.21 KB
+ESM dist/chunk-XNXV7VHG.js          99.00 KB
+ESM dist/chunk-T5J7LQTR.js          259.46 KB
+ESM dist/chunk-B7BJH5TO.js          160.43 KB
 ESM dist/chunk-IIDQHWJY.js          22.13 KB
 ESM dist/chunk-G427VBUB.js          2.65 KB
-ESM dist/chunk-XNXV7VHG.js          99.00 KB
-ESM dist/chunk-B7BJH5TO.js          160.43 KB
-ESM dist/chunk-T5J7LQTR.js          259.46 KB
+ESM dist/chunk-567UPUC7.js          2.15 KB
+ESM dist/dist-OCTGHBXX.js           729.46 KB
+ESM dist/chunk-BZIUA2KE.js          3.58 KB
 ESM dist/migrator-ECZWQJA5.js       1.62 MB
-ESM dist/chunk-YRXVRQJQ.js          4.58 MB
-ESM ⚡️ Build success in 267ms
-DTS ⚡️ Build success in 3396ms
+ESM dist/chunk-WGN3KOPE.js          4.60 MB
+ESM ⚡️ Build success in 303ms
+DTS ⚡️ Build success in 3569ms
 DTS dist/index.d.ts                   20.00 B
 DTS dist/commands/agent.d.ts          1.08 KB
 DTS dist/commands/create.d.ts         478.00 B
@@ -87,7 +88,7 @@ DTS dist/commands/test.d.ts           170.00 B
 DTS dist/commands/update.d.ts         321.00 B
 DTS dist/commands/start.d.ts          4.65 KB
 Templates have been copied and updated successfully.
-Debugger listening on ws://127.0.0.1:62080/ca53dcd8-cc03-4dcb-bdaa-e7ae5d3af580
+Debugger listening on ws://127.0.0.1:59902/6692c839-e1d4-4f7c-98af-0f6411a3a2f4
 For help, see: https://nodejs.org/en/docs/inspector
 Debugger attached.
 
@@ -102,38 +103,29 @@ Debugger attached.
 [38;5;27m⠀⠀⠀⠀⢸⣿⡦⠀⠀⠉⠛⠿⠃⠀⠀⠀ [38;5;255m ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[38;5;255m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[0m
 
 [38;5;51mVersion: 1.0.4[0m
-[2025-06-05 15:45:20] WARN: [36mServer authentication is disabled. Set ELIZA_SERVER_AUTH_TOKEN environment variable to enable.[39m
+[2025-06-05 17:51:27] WARN: [36mServer authentication is disabled. Set ELIZA_SERVER_AUTH_TOKEN environment variable to enable.[39m
+[2025-06-05 17:51:28] WARN: [36mPort 3000 is in use, using port 3001 instead[39m
 [32mStartup successful!
-Go to the dashboard at [1mhttp://localhost:3000[22m[0m
-AgentServer is listening on port 3000
-{"level":30,"time":1749138321590,"pid":43364,"hostname":"moondeMacBook-Pro.local","msg":"Document processor starting with Contextual Knowledge DISABLED"}
-[2025-06-05 15:45:21] ERROR: [36m[SocketIO] agentId and roomId are required[39m
+Go to the dashboard at [1mhttp://localhost:3001[22m[0m
+AgentServer is listening on port 3001
+{"level":30,"time":1749145889091,"pid":74311,"hostname":"moondeMacBook-Pro.local","msg":"Document processor starting with Contextual Knowledge DISABLED"}
 [elizaos] Resolved .env file from: /Volumes/Code/Projects/AI/blockSeq/.env
-[2025-06-05 15:45:21] INFO: [36mInitializing Knowledge Plugin...[39m
-[2025-06-05 15:45:21] INFO: [36mValidating model configuration for Knowledge plugin...[39m
-[2025-06-05 15:45:21] WARN: [36mEMBEDDING_PROVIDER not specified, but plugin-openai configuration incomplete. Check OPENAI_API_KEY and OPENAI_EMBEDDING_MODEL.[39m
-[2025-06-05 15:45:21] INFO: [36mContextual Knowledge is disabled. Using embedding configuration from plugin-openai.[39m
-[2025-06-05 15:45:21] INFO: [36mRunning in Basic Embedding mode with auto-detected configuration from plugin-openai.[39m
-[2025-06-05 15:45:21] INFO: [36mUsing openai for embeddings with text-embedding-3-small.[39m
-[2025-06-05 15:45:21] INFO: [36mModel configuration validated successfully.[39m
-[2025-06-05 15:45:21] INFO: [36mKnowledge Plugin initialized for agent: b850bc30-45f8-0041-a00a-83df46d8555d[39m
-[2025-06-05 15:45:21] INFO: [36mKnowledge Plugin initialized. Frontend panel should be discoverable via its public route.[39m
-[2025-06-05 15:45:23] INFO: [36mStarting Knowledge service for agent: b850bc30-45f8-0041-a00a-83df46d8555d[39m
-[2025-06-05 15:45:23] INFO: [36mKnowledgeService initialized for agent b850bc30-45f8-0041-a00a-83df46d8555d with config:[39m
+[2025-06-05 17:51:29] INFO: [36mInitializing Knowledge Plugin...[39m
+[2025-06-05 17:51:29] INFO: [36mValidating model configuration for Knowledge plugin...[39m
+[2025-06-05 17:51:29] INFO: [36mEMBEDDING_PROVIDER not specified, using configuration from plugin-openai[39m
+[2025-06-05 17:51:29] INFO: [36mContextual Knowledge is disabled. Using embedding configuration from plugin-openai.[39m
+[2025-06-05 17:51:29] INFO: [36mRunning in Basic Embedding mode with auto-detected configuration from plugin-openai.[39m
+[2025-06-05 17:51:29] INFO: [36mUsing openai for embeddings with text-embedding-3-small.[39m
+[2025-06-05 17:51:29] INFO: [36mModel configuration validated successfully.[39m
+[2025-06-05 17:51:29] INFO: [36mKnowledge Plugin initialized for agent: b850bc30-45f8-0041-a00a-83df46d8555d[39m
+[2025-06-05 17:51:29] INFO: [36mKnowledge Plugin initialized. Frontend panel should be discoverable via its public route.[39m
+[2025-06-05 17:51:31] INFO: [36mStarting Knowledge service for agent: b850bc30-45f8-0041-a00a-83df46d8555d[39m
+[2025-06-05 17:51:31] INFO: [36mKnowledgeService initialized for agent b850bc30-45f8-0041-a00a-83df46d8555d with config:[39m
     CTX_KNOWLEDGE_ENABLED: false
     LOAD_DOCS_ON_STARTUP: false
-[2025-06-05 15:45:23] INFO: [36mKnowledgeService: No character knowledge to process for agent b850bc30-45f8-0041-a00a-83df46d8555d.[39m
-[2025-06-05 15:45:26] INFO: [36mDefault docs folder does not exist at: /Volumes/Code/Projects/AI/blockSeq/packages/cli/docs[39m
-[2025-06-05 15:45:26] INFO: [36mTo use the knowledge plugin, either:[39m
-[2025-06-05 15:45:26] INFO: [36m1. Create a "docs" folder in your project root[39m
-[2025-06-05 15:45:26] INFO: [36m2. Set KNOWLEDGE_PATH environment variable to your documents folder[39m
-[2025-06-05 15:45:26] WARN: [36mKnowledge path does not exist: /Volumes/Code/Projects/AI/blockSeq/packages/cli/docs[39m
-[2025-06-05 15:45:39] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-[2025-06-05 15:57:58] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-[2025-06-05 15:58:00] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-[2025-06-05 15:58:01] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-[2025-06-05 15:58:02] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-[2025-06-05 15:58:09] ERROR: [36m[SocketIO] agentId and roomId are required[39m
-error: script "start" was terminated by signal SIGTERM (Polite quit request)
-error: script "start" was terminated by signal SIGTERM (Polite quit request)
- ERROR  run failed: command  exited (1)
+[2025-06-05 17:51:31] INFO: [36mKnowledgeService: No character knowledge to process for agent b850bc30-45f8-0041-a00a-83df46d8555d.[39m
+[2025-06-05 17:51:34] INFO: [36mDefault docs folder does not exist at: /Volumes/Code/Projects/AI/blockSeq/packages/cli/docs[39m
+[2025-06-05 17:51:34] INFO: [36mTo use the knowledge plugin, either:[39m
+[2025-06-05 17:51:34] INFO: [36m1. Create a "docs" folder in your project root[39m
+[2025-06-05 17:51:34] INFO: [36m2. Set KNOWLEDGE_PATH environment variable to your documents folder[39m
+[2025-06-05 17:51:34] WARN: [36mKnowledge path does not exist: /Volumes/Code/Projects/AI/blockSeq/packages/cli/docs[39m

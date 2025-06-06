@@ -542,15 +542,15 @@ export default function Page({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const validFiles = files.filter(
-      (file) => file.type.startsWith('image/')
-      // file.type.startsWith('video/') ||
+      (file) => file.type.startsWith('image/') ||
+        file.type.startsWith('video/') ||
+        file.type === 'application/vnd.ms-excel' ||
+        file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       // file.type.startsWith('application/') ||
       // file.type.startsWith('text/') ||
       // file.type === 'application/pdf' ||
       // file.type === 'application/msword' ||
       // file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-      // file.type === 'application/vnd.ms-excel' ||
-      // file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
       // file.type === 'application/vnd.ms-powerpoint' ||
       // file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     );
@@ -781,6 +781,14 @@ export default function Page({
                             className="w-full h-full object-cover"
                             muted
                           />
+                        ) : fileData.file.type === 'application/vnd.ms-excel' ||
+                          fileData.file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ? (
+                          <div className="w-full h-full flex items-center justify-center bg-green-50">
+                            <div className="flex flex-col items-center">
+                              <FileText className="h-6 w-6 text-green-600" />
+                              <span className="text-xs text-green-600 mt-1">Excel</span>
+                            </div>
+                          </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted">
                             <FileText className="h-8 w-8 text-muted-foreground" />
@@ -835,20 +843,20 @@ export default function Page({
                         }}
                       >
                         <Image className="size-4" />
-                        <span className="sr-only">Attach image for description</span>
+                        <span className="sr-only">Attach files (images, videos, Excel)</span>
                       </Button>
                       <input
                         type="file"
                         ref={fileInputRef}
                         onChange={handleFileChange}
-                        accept="image/*"
+                        accept="image/*,video/*,.xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         multiple
                         className="hidden"
                       />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="left">
-                    <p>Attach an image for the AI to describe</p>
+                    <p>Attach files (images, videos, Excel)</p>
                   </TooltipContent>
                 </Tooltip>
                 <AudioRecorder

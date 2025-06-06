@@ -74,7 +74,7 @@ async function processAttachments(attachments: any[], agentId?: string): Promise
         return attachment;
       }
 
-      logger.info(`[SOCKET] Converting localhost URL to base64: ${attachment.url}`);
+      logger.info(`[SOCKET] Processing localhost URL: ${attachment.url}`);
 
       try {
         // Extract file path from URL
@@ -121,6 +121,56 @@ async function processAttachments(attachments: any[], agentId?: string): Promise
 
         logger.info(`[SOCKET] Reading file from: ${filePath}`);
 
+        // Check if this is an Excel file
+        const ext = path.extname(filename).toLowerCase();
+        const isExcelFile = ext === '.xlsx' || ext === '.xls';
+
+        if (isExcelFile) {
+          logger.info(`[SOCKET] Processing Excel file: ${filename}`);
+
+          try {
+            // Import Excel service for processing
+            const { ExcelService } = await import('@elizaos/plugin-excel');
+            const excelService = new ExcelService(null as any);
+
+            // Generate AI-friendly summary instead of Base64 data
+            const aiSummary = await excelService.generateAIFriendlySummary(filePath);
+            const fileInfo = await excelService.getExcelInfo(filePath);
+
+            logger.info(`[SOCKET] Excel processing complete. Summary length: ${aiSummary.length} chars`);
+
+            // Return Excel attachment with processed summary
+            return {
+              ...attachment,
+              type: 'excel',
+              mimeType: ext === '.xlsx'
+                ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                : 'application/vnd.ms-excel',
+              filename: filename,
+              fileSize: fileInfo.fileSize,
+              sheetCount: fileInfo.sheetCount,
+              sheetNames: fileInfo.sheetNames,
+              summary: aiSummary,
+              // Keep original URL for chart generation
+              originalUrl: attachment.url,
+              // Don't include Base64 data for Excel files
+              processedForAI: true
+            };
+
+          } catch (excelError) {
+            logger.error(`[SOCKET] Error processing Excel file:`, excelError);
+            // Fallback to basic attachment info without Base64
+            return {
+              ...attachment,
+              type: 'excel',
+              filename: filename,
+              error: 'Excel processing failed, file available for download',
+              processedForAI: false
+            };
+          }
+        }
+
+        // For non-Excel files, continue with existing Base64 processing
         const fileBuffer = fs.readFileSync(filePath);
         const base64Data = fileBuffer.toString('base64');
 
@@ -133,7 +183,6 @@ async function processAttachments(attachments: any[], agentId?: string): Promise
           attachment.contentType === 'image' ||
           attachment.contentType === 'application/octet-stream'
         ) {
-          const ext = path.extname(filename).toLowerCase();
           const mimeTypes: { [key: string]: string } = {
             '.jpg': 'image/jpeg',
             '.jpeg': 'image/jpeg',
@@ -186,7 +235,7 @@ async function processAttachments(attachments: any[], agentId?: string): Promise
           detectedMimeType: mimeType,
         };
       } catch (error) {
-        logger.error(`[SOCKET] Error converting localhost URL to base64:`, error);
+        logger.error(`[SOCKET] Error processing attachment:`, error);
         return attachment;
       }
     })
@@ -315,8 +364,8 @@ async function processSocketMessage(
             source: `${source}:agent`,
             ...(content.providers &&
               content.providers.length > 0 && {
-                providers: content.providers,
-              }),
+              providers: content.providers,
+            }),
           },
           roomId: uniqueRoomId,
           createdAt: Date.now(),

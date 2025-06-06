@@ -17,7 +17,7 @@ router.post('/generate-chart', (req, res) => {
         const chartId = `chart-${Date.now()}`;
         const chartHtml = generateChartHtml(data, chartType, title, chartId);
 
-        // Save chart to file
+        // Save chart to file - use correct data directory
         const chartsDir = path.join(process.cwd(), 'data');
         if (!fs.existsSync(chartsDir)) {
             fs.mkdirSync(chartsDir, { recursive: true });

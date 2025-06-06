@@ -88,11 +88,11 @@ export class SocketIORouter {
   }
 
   private handleGenericMessage(socket: Socket, data: any) {
-    logger.debug(`[SocketIO] Generic 'message' event received: ${JSON.stringify(data)}`);
+    logger.debug(`[SocketIO] Generic 'message' event received. Type: ${data?.type || 'unknown'}`);
 
     try {
       if (!(data && typeof data === 'object' && 'type' in data && 'payload' in data)) {
-        logger.warn(`[SocketIO] Malformed 'message' event data: ${JSON.stringify(data)}`);
+        logger.warn(`[SocketIO] Malformed 'message' event data. Keys: ${Object.keys(data || {}).join(', ')}`);
         return;
       }
 

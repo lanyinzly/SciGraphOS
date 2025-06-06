@@ -48,11 +48,224 @@ export interface ServerOptions {
 const AGENT_RUNTIME_URL =
   process.env.AGENT_RUNTIME_URL?.replace(/\/$/, '') || 'http://localhost:3000';
 
+// Gallery HTML generation function
+function generateGalleryHtml(charts: any[]): string {
+  const chartCards = charts.map(chart => `
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>${chart.title}</h3>
+        <span class="chart-type ${chart.type}">${chart.type.toUpperCase()}</span>
+      </div>
+      <div class="chart-preview">
+        <iframe src="${chart.url}" width="100%" height="300" frameborder="0"></iframe>
+      </div>
+      <div class="chart-footer">
+        <span class="chart-date">${new Date(chart.created).toLocaleString()}</span>
+        <a href="${chart.url}" target="_blank" class="view-btn">View Full Chart</a>
+      </div>
+    </div>
+  `).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Gallery - ElizaOS</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .chart-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chart-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .chart-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .chart-type.bar {
+            background: #3498db;
+            color: white;
+        }
+        .chart-type.line {
+            background: #e74c3c;
+            color: white;
+        }
+        .chart-type.pie {
+            background: #f39c12;
+            color: white;
+        }
+        .chart-type.doughnut {
+            background: #9b59b6;
+            color: white;
+        }
+        .chart-preview {
+            height: 300px;
+            overflow: hidden;
+        }
+        .chart-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        .chart-date {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .view-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+        .view-btn:hover {
+            background: #2980b9;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        .empty-state h2 {
+            margin-bottom: 10px;
+        }
+        .stats {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .stats h2 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Chart Gallery</h1>
+        <p>AI-generated charts from your Excel data</p>
+    </div>
+    
+    ${charts.length > 0 ? `
+    <div class="stats">
+        <h2>Gallery Statistics</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">${charts.length}</div>
+                <div class="stat-label">Total Charts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${[...new Set(charts.map(c => c.type))].length}</div>
+                <div class="stat-label">Chart Types</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${charts.filter(c => c.type === 'bar').length}</div>
+                <div class="stat-label">Bar Charts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${charts.filter(c => c.type === 'line').length}</div>
+                <div class="stat-label">Line Charts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${charts.filter(c => c.type === 'pie').length}</div>
+                <div class="stat-label">Pie Charts</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="gallery">
+        ${chartCards}
+    </div>
+    ` : `
+    <div class="empty-state">
+        <h2>No Charts Yet</h2>
+        <p>Upload an Excel file to generate your first chart!</p>
+    </div>
+    `}
+</body>
+</html>`;
+}
+
 /**
  * Class representing an agent server.
  */ /**
- * Represents an agent server which handles agents, database, and server functionalities.
- */
+* Represents an agent server which handles agents, database, and server functionalities.
+*/
 export class AgentServer {
   public app: express.Application;
   private agents: Map<UUID, IAgentRuntime>;
@@ -314,6 +527,90 @@ export class AgentServer {
           });
         }
       );
+
+      // Setup chart serving endpoint
+      this.app.get('/api/charts/:chartId', (req: any, res: any) => {
+        try {
+          const { chartId } = req.params;
+          const chartFile = path.join(process.cwd(), 'data', `${chartId}.html`);
+
+          logger.debug(`[CHART API] Looking for chart file: ${chartFile}`);
+          logger.debug(`[CHART API] Current working directory: ${process.cwd()}`);
+
+          if (!fs.existsSync(chartFile)) {
+            // Try alternative path
+            const altChartFile = path.join(process.cwd(), 'packages', 'cli', 'data', `${chartId}.html`);
+            logger.debug(`[CHART API] Trying alternative path: ${altChartFile}`);
+
+            if (fs.existsSync(altChartFile)) {
+              const chartHtml = fs.readFileSync(altChartFile, 'utf8');
+              res.setHeader('Content-Type', 'text/html');
+              return res.send(chartHtml);
+            }
+
+            return res.status(404).json({ error: 'Chart not found', path: chartFile, altPath: altChartFile });
+          }
+
+          const chartHtml = fs.readFileSync(chartFile, 'utf8');
+          res.setHeader('Content-Type', 'text/html');
+          res.send(chartHtml);
+        } catch (error) {
+          logger.error('Chart serving error:', error);
+          res.status(500).json({ error: 'Failed to serve chart' });
+        }
+      });
+
+      // Setup chart gallery endpoint
+      this.app.get('/gallery', (req: any, res: any) => {
+        try {
+          const dataDir = path.join(process.cwd(), 'data');
+          const altDataDir = path.join(process.cwd(), 'packages', 'cli', 'data');
+
+          let chartsDir = dataDir;
+          if (!fs.existsSync(dataDir) && fs.existsSync(altDataDir)) {
+            chartsDir = altDataDir;
+          }
+
+          if (!fs.existsSync(chartsDir)) {
+            return res.send(generateGalleryHtml([]));
+          }
+
+          const chartFiles = fs.readdirSync(chartsDir)
+            .filter(file => file.startsWith('chart-') && file.endsWith('.html'))
+            .map(file => {
+              const chartId = file.replace('.html', '');
+              const filePath = path.join(chartsDir, file);
+              const stats = fs.statSync(filePath);
+
+              // Extract title from HTML file
+              const htmlContent = fs.readFileSync(filePath, 'utf8');
+              const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/);
+              const title = titleMatch ? titleMatch[1] : chartId;
+
+              // Extract chart type from HTML
+              const typeMatch = htmlContent.match(/"type":"([^"]+)"/);
+              const type = typeMatch ? typeMatch[1] : 'unknown';
+
+              return {
+                id: chartId,
+                title: title,
+                type: type,
+                url: `/api/charts/${chartId}`,
+                created: stats.mtime.toISOString()
+              };
+            })
+            .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+
+          const galleryHtml = generateGalleryHtml(chartFiles);
+          res.setHeader('Content-Type', 'text/html');
+          res.send(galleryHtml);
+        } catch (error) {
+          logger.error('Gallery error:', error);
+          res.status(500).json({ error: 'Failed to load gallery' });
+        }
+      });
+
+      logger.debug('Chart API and Gallery endpoints registered successfully');
 
       // Add a catch-all route for API 404s
       this.app.use((req, res, next) => {

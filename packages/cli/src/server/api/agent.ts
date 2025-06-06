@@ -31,6 +31,225 @@ import FormData from 'form-data';
 import axios from 'axios';
 import sharp from 'sharp';
 
+// AI-driven chart type selection based on data characteristics
+function selectOptimalChartType(sheet: any, numericColumns: any[], chartData: any[]): string {
+  const dataCount = chartData.length;
+  const sheetName = sheet.name.toLowerCase();
+  const columnHeader = numericColumns[0]?.header?.toLowerCase() || '';
+
+  // Analyze data patterns
+  const values = chartData.map(d => d.value);
+  const maxValue = Math.max(...values);
+  const minValue = Math.min(...values);
+  const range = maxValue - minValue;
+  const average = values.reduce((a, b) => a + b, 0) / values.length;
+
+  // Check for time series data
+  const hasTimeData = sheet.data[0]?.some((header: string) =>
+    header?.toLowerCase().includes('date') ||
+    header?.toLowerCase().includes('time') ||
+    header?.toLowerCase().includes('month') ||
+    header?.toLowerCase().includes('year')
+  );
+
+  // Check for percentage data
+  const hasPercentageData = columnHeader.includes('percent') ||
+    columnHeader.includes('rate') ||
+    columnHeader.includes('ratio') ||
+    values.some(v => v > 0 && v <= 1);
+
+  // Check for categorical distribution
+  const isDistribution = sheetName.includes('distribution') ||
+    sheetName.includes('breakdown') ||
+    sheetName.includes('composition');
+
+  // AI decision logic
+  if (hasTimeData && dataCount >= 3) {
+    return 'line'; // Time series data best shown as line chart
+  }
+
+  if (hasPercentageData || isDistribution) {
+    if (dataCount <= 8) {
+      return 'pie'; // Small categorical data as pie chart
+    } else {
+      return 'doughnut'; // Larger categorical data as doughnut
+    }
+  }
+
+  if (dataCount <= 3) {
+    return 'pie'; // Very small datasets as pie chart
+  }
+
+  if (dataCount >= 15) {
+    return 'line'; // Large datasets better as line chart
+  }
+
+  // Check for comparison scenarios
+  if (sheetName.includes('comparison') || sheetName.includes('vs') ||
+    columnHeader.includes('sales') || columnHeader.includes('revenue') ||
+    columnHeader.includes('profit') || columnHeader.includes('orders')) {
+    return 'bar'; // Comparison data as bar chart
+  }
+
+  // Check for trend analysis
+  if (range > average * 2) {
+    return 'line'; // High variance suggests trend analysis
+  }
+
+  // Default to bar chart for general numeric data
+  return 'bar';
+}
+
+// Chart generation function
+function generateChartHtml(data: any[], chartType: string, title: string, chartId: string): string {
+  const labels = data.map(item => item.label || item.name || item.x || 'Unknown');
+  const values = data.map(item => item.value || item.y || item.count || 0);
+
+  // Generate appropriate chart configuration based on type
+  const getChartConfig = () => {
+    const baseConfig: any = {
+      type: chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: title,
+          data: values,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 205, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)',
+            'rgba(199, 199, 199, 0.8)',
+            'rgba(83, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)',
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 205, 86, 0.8)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 205, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(199, 199, 199, 1)',
+            'rgba(83, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 205, 86, 1)'
+          ],
+          borderWidth: chartType === 'line' ? 3 : 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: chartType === 'pie' || chartType === 'doughnut' ? 'right' : 'top',
+          },
+          title: {
+            display: true,
+            text: title
+          }
+        }
+      }
+    };
+
+    // Chart-specific configurations
+    if (chartType === 'line') {
+      baseConfig.data.datasets[0].fill = false;
+      baseConfig.data.datasets[0].tension = 0.4;
+      baseConfig.options.scales = {
+        y: { beginAtZero: true },
+        x: { display: true }
+      };
+    } else if (chartType === 'bar') {
+      baseConfig.options.scales = {
+        y: { beginAtZero: true }
+      };
+    } else if (chartType === 'pie' || chartType === 'doughnut') {
+      // Remove scales for pie/doughnut charts
+      delete baseConfig.options.scales;
+      baseConfig.options.plugins.legend.position = 'right';
+    }
+
+    return baseConfig;
+  };
+
+  const chartConfig = getChartConfig();
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        #chartContainer {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>${title}</h1>
+        <div id="chartContainer">
+            <canvas id="${chartId}"></canvas>
+        </div>
+        <div class="info">
+            <h3>Chart Information</h3>
+            <p><strong>Type:</strong> ${chartType}</p>
+            <p><strong>Data Points:</strong> ${data.length}</p>
+            <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('${chartId}').getContext('2d');
+        const chartConfig = ${JSON.stringify(chartConfig)};
+        const chart = new Chart(ctx, chartConfig);
+    </script>
+</body>
+</html>`;
+}
+
 // Cache for compiled regular expressions to improve performance
 const regexCache = new Map<string, RegExp>();
 
@@ -371,7 +590,7 @@ export function agentRouter(
             createdAt: Date.now(),
           };
 
-          logger.debug('Response content sent via HTTP API:', responseContent.providers);
+          logger.debug('Response content sent via HTTP API. Providers count:', responseContent.providers?.length || 0);
 
           await runtime.createMemory(sentMemory, 'messages');
         }
@@ -938,7 +1157,7 @@ export function agentRouter(
 
         // Perform the deletion operation
         const deleteResult = await db.deleteAgent(agentId);
-        logger.debug(`[AGENT DELETE] Database deleteAgent result: ${JSON.stringify(deleteResult)}`);
+        logger.debug(`[AGENT DELETE] Database deleteAgent completed. Success: ${!!deleteResult}`);
 
         // Clear the response timeout since we completed before it triggered
         clearTimeout(timeoutId);
@@ -1983,16 +2202,77 @@ export function agentRouter(
 
         try {
           // Import Excel service for processing
-          const ExcelService = await import('@elizaos/plugin-excel').then(m => m.ExcelService);
-          const excelService = new ExcelService();
+          const { ExcelService } = await import('@elizaos/plugin-excel');
+          const excelService = new ExcelService(null as any); // Temporary runtime for file processing
 
           // Process Excel file to extract data
-          const excelData = await excelService.processExcelFile(mediaFile.path);
+          const excelData = await excelService.extractStructuredDataFromExcel(mediaFile.path);
 
-          // Generate summary and structured data
-          const summary = await excelService.generateSummary(excelData);
+          // Generate AI-friendly summary
+          const summary = await excelService.generateAIFriendlySummary(mediaFile.path);
 
           logger.debug(`[EXCEL UPLOAD] Processed Excel file with ${excelData.sheets?.length || 0} sheets`);
+
+          // Generate charts for numeric data sheets
+          const chartUrls: any[] = [];
+          if (excelData.sheets && excelData.sheets.length > 0) {
+            try {
+              for (const sheet of excelData.sheets) {
+                if (sheet.data && sheet.data.length > 1) {
+                  // Try to find numeric columns for chart generation
+                  const numericColumns = sheet.data[0]?.map((header: any, index: number) => {
+                    const columnData = sheet.data.slice(1).map((row: any) => row[index]);
+                    const numericValues = columnData.filter(val => !isNaN(parseFloat(val)) && isFinite(val));
+                    return numericValues.length > 0 ? { index, header, hasNumeric: true } : null;
+                  }).filter(Boolean) || [];
+
+                  if (numericColumns.length > 0) {
+                    // Generate chart data
+                    const chartData = sheet.data.slice(1).map((row: any) => ({
+                      label: row[0] || `Row ${sheet.data.indexOf(row)}`,
+                      value: parseFloat(row[numericColumns[0].index]) || 0
+                    }));
+
+                    if (chartData.length > 0) {
+                      // Generate chart directly using AI-selected chart type
+                      try {
+                        const chartType = selectOptimalChartType(sheet, numericColumns, chartData);
+                        const chartId = `chart-${Date.now()}`;
+                        const chartHtml = generateChartHtml(chartData, chartType, `${sheet.name} - ${numericColumns[0].header || 'Data'}`, chartId);
+
+                        logger.debug(`[EXCEL UPLOAD] AI selected chart type: ${chartType} for sheet: ${sheet.name}`);
+
+                        // Save chart to file - use correct data directory
+                        const chartsDir = path.join(process.cwd(), 'data');
+                        if (!fs.existsSync(chartsDir)) {
+                          fs.mkdirSync(chartsDir, { recursive: true });
+                        }
+
+                        const chartFile = path.join(chartsDir, `${chartId}.html`);
+                        fs.writeFileSync(chartFile, chartHtml);
+                        logger.debug(`[EXCEL UPLOAD] Chart file saved to: ${chartFile}`);
+
+                        // Return chart URL without HTML content to reduce log size
+                        const chartUrl = `http://localhost:${req.get('host')?.split(':')[1] || '3000'}/api/charts/${chartId}`;
+                        chartUrls.push({
+                          id: chartId,
+                          title: `${sheet.name} - ${numericColumns[0].header || 'Data'}`,
+                          type: chartType,
+                          url: chartUrl
+                          // 不包含 html 字段，避免在日志中打印大量HTML内容
+                        });
+                        logger.info(`[EXCEL UPLOAD] Generated chart for sheet: ${sheet.name}`);
+                      } catch (chartGenError) {
+                        logger.warn(`[EXCEL UPLOAD] Failed to generate chart for sheet ${sheet.name}: ${chartGenError.message}`);
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (chartError) {
+              logger.warn(`[EXCEL UPLOAD] Chart generation failed: ${chartError.message}`);
+            }
+          }
 
           // Store the file locally (Excel files are typically used for data analysis, not sharing)
           const fileUrl = `http://localhost:${req.get('host')?.split(':')[1] || '3000'}/media/uploads/${agentId}/${mediaFile.filename}`;
@@ -2009,12 +2289,20 @@ export function agentRouter(
                 sheets: excelData.sheets?.map(sheet => ({
                   name: sheet.name,
                   rowCount: sheet.data?.length || 0,
-                  columnCount: sheet.headers?.length || 0,
-                  headers: sheet.headers
+                  columnCount: sheet.data[0]?.length || 0,
+                  // 不在响应中包含完整数据，避免日志过大
+                  hasData: sheet.data && sheet.data.length > 0
                 })),
                 summary: summary,
                 totalSheets: excelData.sheets?.length || 0,
-                processed: true
+                processed: true,
+                charts: chartUrls.length > 0 ? chartUrls.map(chart => ({
+                  id: chart.id,
+                  title: chart.title,
+                  type: chart.type,
+                  url: chart.url
+                  // 移除 html 字段，避免在日志中打印大量HTML内容
+                })) : undefined
               }
             },
           });

@@ -47,6 +47,21 @@ async function testExcelUpload() {
                     console.log(`   Sheet ${index + 1}: ${sheet.name} (${sheet.rowCount} rows, ${sheet.columnCount} columns)`);
                 });
             }
+
+            // 检查是否生成了图表
+            if (response.data.data.excelData.charts) {
+                console.log('📊 Charts generated successfully!');
+                response.data.data.excelData.charts.forEach((chart, index) => {
+                    if (typeof chart === 'object' && chart.url) {
+                        console.log(`   Chart ${index + 1}: ${chart.title} (${chart.type})`);
+                        console.log(`   URL: ${chart.url}`);
+                    } else {
+                        console.log(`   Chart ${index + 1}: ${chart}`);
+                    }
+                });
+            } else {
+                console.log('📊 No charts generated (may not contain numeric data)');
+            }
         } else {
             console.log('⚠️  Excel file uploaded but not processed');
         }
