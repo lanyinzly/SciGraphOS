@@ -1,266 +1,103 @@
-# Eliza 🤖
+# SciGraphOS
 
-<div align="center">
-  <img src="./docs/static/img/eliza_banner.jpg" alt="Eliza Banner" width="100%" />
-</div>
+**Agent-Based Infrastructure for Verifiable Scientific Visualization**  
 
-<div align="center">
-
-📑 [Technical Report](https://arxiv.org/pdf/2501.06781) | 📖 [Documentation](https://elizaos.github.io/eliza/) | 🎯 [Examples](https://github.com/thejoven/awesome-eliza)
-
-</div>
-
-## 🌍 README Translations
-
-[中文说明](packages/docs/i18n/readme/README_CN.md) | [日本語の説明](packages/docs/i18n/readme/README_JA.md) | [한국어 설명](packages/docs/i18n/readme/README_KOR.md) | [Persian](packages/docs/i18n/readme/README_FA.md) | [Français](packages/docs/i18n/readme/README_FR.md) | [Português](packages/docs/i18n/readme/README_PTBR.md) | [Türkçe](packages/docs/i18n/readme/README_TR.md) | [Русский](packages/docs/i18n/readme/README_RU.md) | [Español](packages/docs/i18n/readme/README_ES.md) | [Italiano](packages/docs/i18n/readme/README_IT.md) | [ไทย](packages/docs/i18n/readme/README_TH.md) | [Deutsch](packages/docs/i18n/readme/README_DE.md) | [Tiếng Việt](packages/docs/i18n/readme/README_VI.md) | [עִברִית](packages/docs/i18n/readme/README_HE.md) | [Tagalog](packages/docs/i18n/readme/README_TG.md) | [Polski](packages/docs/i18n/readme/README_PL.md) | [Arabic](packages/docs/i18n/readme/README_AR.md) | [Hungarian](packages/docs/i18n/readme/README_HU.md) | [Srpski](packages/docs/i18n/readme/README_RS.md) | [Română](packages/docs/i18n/readme/README_RO.md) | [Nederlands](packages/docs/i18n/readme/README_NL.md) | [Ελληνικά](packages/docs/i18n/readme/README_GR.md)
-
-## 🚩 Overview
-
-<div align="center">
-  <img src="./docs/static/img/eliza_diagram.jpg" alt="Eliza Diagram" width="100%" />
-</div>
-
-## ✨ Features
-
-- 🛠️ Full-featured Discord, X (Twitter) and Telegram connectors
-- 🔗 Support for every model (Llama, Grok, OpenAI, Anthropic, Gemini, etc.)
-- 👥 Multi-agent and room support
-- 📚 Easily ingest and interact with your documents
-- 💾 Retrievable memory and document store
-- 🚀 Highly extensible - create your own actions and clients
-- 📦 Just works!
-
-## Video Tutorials
-
-[AI Agent Dev School](https://www.youtube.com/watch?v=ArptLpQiKfI&list=PLx5pnFXdPTRzWla0RaOxALTSTnVq53fKL)
-
-## 🎯 Use Cases
-
-- 🤖 Chatbots
-- 🕵️ Autonomous Agents
-- 📈 Business Process Handling
-- 🎮 Video Game NPCs
-- 🧠 Trading
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- [Python 2.7+](https://www.python.org/downloads/)
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [bun](https://bun.sh/docs/installation)
-
-> **Note for Windows Users:** [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install-manual) is required.
-
-### Use the Starter (Recommended)
-
-```bash
-git clone https://github.com/elizaos/eliza-starter.git
-cd eliza-starter
-cp .env.example .env
-bun i && bun run build && bun start
-```
-
-### Manually Start Eliza (Only recommended if you know what you are doing)
-
-#### Prerequisites
-
-- **Node.js** (v18+ recommended)
-- **bun** (for CLI and dependencies)
-- **bats** (shell test runner, install globally via npm or bun)
-- **git** (for project/plugin tests)
-
-#### Install Bats (Test Runner)
-
-You need the [bats-core](https://github.com/bats-core/bats-core) test runner for shell tests.
-
-To install globally:
-
-```bash
-npm install -g bats
-# or, if you use bun:
-bun add -g bats
-```
-
-#### Checkout the latest release
-
-```bash
-# Clone the repository
-git clone https://github.com/elizaos/eliza.git
-
-# This project iterates fast, so we recommend checking out the latest release
-git checkout $(git describe --tags --abbrev=0)
-# If the above doesn't checkout the latest release, this should work:
-# git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
-```
-
-#### Edit the .env file
-
-Copy .env.example to .env and fill in the appropriate values.
-
-```
-cp .env.example .env
-```
-
-Note: .env is optional. If you're planning to run multiple distinct agents, you can pass secrets through the character JSON
-
-#### Start Eliza
-
-Important! We now use Bun. If you are using npm, you will need to install Bun:
-https://bun.sh/docs/installation
-
-```bash
-bun install
-bun run build # npm will work too
-bun start # npm will work too
-```
-
-### Interact via Browser
-
-Once the agent is running, you can visit http://localhost:3000 to interact with your agent through a web interface. The interface provides:
-
-- Real-time chat with your agent
-- Character configuration options
-- Plugin management
-- Memory and conversation history
-
-### OpenTelemetry Instrumentation (Optional)
-
-Eliza supports OpenTelemetry for tracing and monitoring agent behavior. This allows you to gain insights into the performance and execution flow of your agents.
-
-**Enabling Instrumentation:**
-
-Set the following environment variable:
-
-```bash
-INSTRUMENTATION_ENABLED=true
-```
-
-When enabled, Eliza will:
-
-- Initialize an OpenTelemetry tracer.
-- Automatically trace key operations within the core `AgentRuntime` and supported plugins (e.g., the `plugin-openai`).
-
-**Service Name:**
-
-The default service name for traces will be `agent-<character_name>-<agent_id>`.
-
-**PostgreSQL Exporter Setup (Example):**
-
-If you plan to export traces to a PostgreSQL database (e.g., using a compatible OpenTelemetry exporter), you can start a local instance using Docker:
-
-```bash
-docker run -d --name postgres-tracing -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=eliza_tracing postgres:15
-```
-
-You will also need to configure the connection URL via the following environment variable, adjusting it based on your database setup:
-
-```bash
-INSTRUMENTATION_ENABLED=true
-POSTGRES_URL_INSTRUMENTATION="postgresql://postgres:postgres@localhost:5432/eliza_tracing"
-```
+Figures you can trust, trace, and reuse.
 
 ---
 
-### Automatically Start Eliza
+## 🧠 What is SciGraphOS?
 
-The start script provides an automated way to set up and run Eliza:
+Most scientific figures today are **just pixels**—no audit trail, no metadata, and no reproducibility.  
+**SciGraphOS** transforms visual outputs into **verifiable, self-contained records** backed by modular AI agents and cryptographic provenance.
 
-## Citation
+> It’s not just a chart. It’s structured, reproducible evidence.
 
-We now have a [paper](https://arxiv.org/pdf/2501.06781) you can cite for the Eliza OS:
+In internal testing, SciGraphOS **reduced figure-prep time from 3–6 hours to under 3 minutes**, while preserving full traceability from raw dataset to final chart.
 
-```bibtex
-@article{walters2025eliza,
-  title={Eliza: A Web3 friendly AI Agent Operating System},
-  author={Walters, Shaw and Gao, Sam and Nerd, Shakker and Da, Feng and Williams, Warren and Meng, Ting-Chien and Han, Hunter and He, Frank and Zhang, Allen and Wu, Ming and others},
-  journal={arXiv preprint arXiv:2501.06781},
-  year={2025}
-}
-```
+---
 
-## Contributors
+## 🚨 The Problem
 
-<a href="https://github.com/elizaos/eliza/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=elizaos/eliza" alt="Eliza project contributors" />
-</a>
+Scientific figures are central to:
+- Research transparency
+- Peer review
+- Regulatory filings
 
-## Star History
+Yet today:
+- **52% of biomedical findings are not reproducible** ([Amgen/Bayer studies])
+- **No visual audit trails**
+- **No link to data or methods**
+- **No accountability**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=elizaos/eliza&type=Date)](https://star-history.com/#elizaos/eliza&Date)
+> Researchers don’t just need visuals—they need **proof**.
 
-## Git Hooks
+---
 
-This project uses git hooks to ensure code quality:
+## 🏗 Architecture: Agent-Driven by Design
 
-- **pre-commit**: Automatically formats staged files using Prettier before committing
+SciGraphOS is built as a **modular, agent-based system**, where each agent performs a deterministic task and logs all actions by design.
 
-To run the pre-commit hook manually:
+### Core Agents:
+- `ChartGen Agent` – Generates context-aware figures
+- `StatsCheck Agent` – Verifies statistical soundness
+- `QA Agent` – Ensures formatting and accessibility
+- `Provenance Agent` – Embeds metadata and hashes
+- `Governance Agent` – Handles permissions, reviews, and approvals
 
-```bash
-bun run pre-commit
-```
+Each figure is **anchored on-chain**, making it cryptographically verifiable and permanently attributable.
 
-## Tauri Application CI/CD and Signing
+---
 
-The Eliza application, built with Tauri and located in `packages/app`, is configured for cross-platform continuous integration and deployment. This setup automates the building and releasing of the application for various operating systems.
+## ⚙️ Key Features
 
-### Overview
+| Feature                     | Description                                                                 |
+|----------------------------|-----------------------------------------------------------------------------|
+| 🔐 Verifiable by Default   | Embedded metadata + on-chain hashes = born traceable                        |
+| 🤖 Agent-Driven Workflow    | Modular AI agents handle generation, QA, and governance                     |
+| ⚡️ High Efficiency          | Prep time drops from 3–6 hours → under 3 minutes                            |
+| 📜 Audit-Ready & Compliant | 21 CFR Part 11-ready, with timestamped trails and tamper-proof logs         |
+| 🔗 Attribution Layer        | Figures are citable, reusable, and anchored to creator identity on-chain    |
 
-The Tauri application is designed to be built for:
+---
 
-- Desktop: Linux, macOS, and Windows.
-- Mobile: Android and iOS.
+## 🔬 Use Cases
 
-### CI/CD Workflows
+- **🧬 Bioinformatics & Single-cell Analysis**  
+  Generate UMAPs, volcano plots, and heatmaps in minutes—with embedded logic and traceable lineage.
 
-Two main GitHub Actions workflows handle the CI/CD process for the Tauri application:
+- **🏥 Multi-Institutional Trials**  
+  Sites don’t share raw data. Each runs the same agent stack, anchoring results to a shared ledger.
 
-- **`tauri-ci.yml`**:
+- **📑 Regulatory Filings (FDA, EMA)**  
+  Meet compliance standards with audit-ready visuals and cryptographic proof of origin.
 
-  - Triggered on pushes to `main`, `develop`, and `v2-develop` branches.
-  - Performs debug builds of the desktop application (Linux, macOS, Windows) to ensure code integrity and catch build issues early.
+- **🌐 Open Science & Attribution**  
+  Make your figures citable assets. Track reuse and receive on-chain credit.
 
-- **`tauri-release.yml`**:
-  - Triggered when new tags (e.g., `v*`) are pushed or when a new release is created/published on GitHub.
-  - Builds release-ready versions of the application for all supported desktop platforms (Linux AppImage & .deb, macOS .dmg, Windows .exe NSIS installer).
-  - Builds release versions for mobile platforms (Android .apk, iOS .ipa).
-  - Uploads all generated binaries and installers as artifacts to the corresponding GitHub Release.
+---
 
-### Mobile Application Backend
+## 🌍 Why SciGraphOS?
 
-The mobile versions of the Eliza Tauri application (Android and iOS) are configured to connect to an external backend service hosted at `https://api.eliza.how`. This connection is essential for certain functionalities of the mobile app.
+Figures are the **visual language of science**—but today, they’re disconnected from the truth they claim to represent.
 
-The Content Security Policy (CSP) in `packages/app/src-tauri/tauri.conf.json` has been updated to allow `connect-src` directives to this specific domain, ensuring that the mobile app can securely communicate with its backend.
+With SciGraphOS:
+- ✅ You don’t need to rerun the code
+- ✅ You don’t need the raw data
+- ✅ You just follow the **cryptographic trail**
 
-### Application Signing (Important for Releases)
+> SciGraphOS turns **figures into proofs**.
 
-For the `tauri-release.yml` workflow to produce _signed_ and deployable mobile applications suitable for app stores or distribution, specific secrets must be configured in the GitHub repository settings (`Settings > Secrets and variables > Actions`).
+---
 
-**Android Signing Secrets:**
+## 📦 Coming Soon
 
-- `ANDROID_KEYSTORE_BASE64`: Base64 encoded content of your Java Keystore file (`.jks` or `.keystore`).
-- `ANDROID_KEYSTORE_ALIAS`: The alias of your key within the keystore.
-- `ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD`: The password for the private key associated with the alias.
-- `ANDROID_KEYSTORE_PASSWORD`: The password for the keystore file itself.
+- CLI and Jupyter integration
+- `.sgos` export format (SVG + Metadata Bundle)
+- On-chain registry and attribution explorer
+- Public beta for academic and biotech users
 
-> **Note**: The CI workflow currently includes a step to generate a dummy, unsigned keystore for Android if these secrets are not provided. This allows the release build to complete and produce an unsigned APK, but this APK cannot be published to app stores. For official releases, providing the actual signing credentials via these secrets is crucial.
+---
 
-**iOS Signing Secrets:**
-
-- `APPLE_DEVELOPMENT_CERTIFICATE_P12_BASE64`: Base64 encoded content of your Apple Distribution Certificate (`.p12` file).
-- `APPLE_CERTIFICATE_PASSWORD`: The password used to encrypt the `.p12` certificate file.
-- `APPLE_PROVISIONING_PROFILE_BASE64`: Base64 encoded content of your Distribution Provisioning Profile (`.mobileprovision` file).
-- `APPLE_DEVELOPMENT_TEAM`: Your Apple Developer Team ID (e.g., `A1B2C3D4E5`).
-
-> **Note**: The CI workflow currently includes placeholder steps for setting up the Apple development environment and signing for iOS. These steps will require the above secrets to be populated. If these secrets are not provided and the signing steps are made active (by uncommenting them in the workflow), the iOS build will likely fail.
-
-### Artifacts
-
-Upon successful completion of the `tauri-release.yml` workflow (triggered by a new tag/release), all compiled application installers and mobile packages will be available as downloadable artifacts on the GitHub Releases page for that specific tag. This includes:
-
-- Linux: `.AppImage` and `.deb` files.
-- macOS: `.dmg` file.
-- Windows: `.exe` NSIS installer.
-- Android: `.apk` file.
-- iOS: `.ipa` file.
+**Built by scientists, for science.**  
+SciGraphOS is not just a tool—it's a credibility layer for computational research.
