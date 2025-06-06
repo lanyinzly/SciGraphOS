@@ -98,19 +98,5 @@ With SciGraphOS:
 
 ---
 
-## 📫 Get Involved
-
-- 💬 Join our waitlist at [https://scigraphos.io](https://scigraphos.io)
-- 🛠 Open an issue or contribute via [GitHub Issues](#)
-- 🧪 Request early access for your lab or institution
-
----
-
-## 📄 License
-
-SciGraphOS is released under the MIT License.
-
----
-
 **Built by scientists, for science.**  
 SciGraphOS is not just a tool—it's a credibility layer for computational research.
