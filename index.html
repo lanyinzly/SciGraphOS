@@ -52,6 +52,30 @@
         linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
       background-size: 60px 60px;
     }
+    
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+      .hero-bg {
+        background-attachment: scroll !important;
+        min-height: 100vh;
+      }
+      .hero-bg::before {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.5) 100%);
+      }
+      .text-shadow-strong {
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.6);
+      }
+      .text-shadow-medium {
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+    }
+    
+    /* Tablet optimizations */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .hero-bg {
+        background-attachment: scroll !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -59,20 +83,24 @@
     <div class="layout-container flex h-full grow flex-col">
       <!-- Hero Section with Integrated Navigation -->
       <section id="home" class="hero-bg network-pattern" style="background-image: url('./assets/SciGraphOS-BG.jpg'); background-color: #6b7280; background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
-        <div class="px-10 flex flex-col min-h-screen hero-content">
+        <div class="px-4 sm:px-6 lg:px-10 flex flex-col min-h-screen hero-content">
           <!-- Floating Navigation -->
-          <div class="flex items-center justify-between py-6">
+          <div class="flex items-center justify-between py-4 sm:py-6">
             <div class="flex items-center">
-              <div class="h-10">
+              <div class="h-8 sm:h-10">
                 <img src="./assets/SciGraphOS-horizontal-dark.png" alt="SciGraphOS" class="h-full object-contain filter brightness-0 invert"/>
               </div>
             </div>
-            <div class="flex items-center gap-6">
-              <div class="flex items-center gap-6 floating-nav rounded-full px-6 py-3">
-                <a class="text-white text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#upload">Datasets</a>
-                <a class="text-white text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#features">Features</a>
-                <a class="text-white text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#architecture">Architecture</a>
-                <a class="text-white text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#roadmap">Roadmap</a>
+            <div class="flex items-center">
+              <div class="hidden sm:flex items-center gap-4 lg:gap-6 floating-nav rounded-full px-4 lg:px-6 py-2 lg:py-3">
+                <a class="text-white text-xs sm:text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#upload">Datasets</a>
+                <a class="text-white text-xs sm:text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#features">Features</a>
+                <a class="text-white text-xs sm:text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#architecture">Architecture</a>
+                <a class="text-white text-xs sm:text-sm font-semibold leading-normal hover:text-blue-300 transition-colors text-shadow-medium" href="#roadmap">Roadmap</a>
+              </div>
+              <!-- Mobile menu button -->
+              <div class="sm:hidden floating-nav rounded-full p-2">
+                <span class="material-icons text-white text-xl">menu</span>
               </div>
             </div>
           </div>
@@ -80,16 +108,16 @@
           <!-- Hero Content -->
           <div class="flex-1 flex items-center justify-center">
             <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
-              <div class="text-center text-white">
-                <h1 class="text-5xl md:text-6xl font-black leading-tight tracking-[-0.033em] mb-6 text-shadow-strong">
+              <div class="text-center text-white px-4">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em] mb-4 sm:mb-6 text-shadow-strong">
                   Agent-Based Infrastructure for
                   <span class="block text-blue-200">Verifiable Scientific Visualization</span>
                 </h1>
-                <p class="text-xl md:text-2xl font-medium leading-relaxed max-w-[800px] mx-auto mb-12 text-white text-shadow-medium">
+                <p class="text-lg sm:text-xl md:text-2xl font-medium leading-relaxed max-w-[800px] mx-auto mb-8 sm:mb-12 text-white text-shadow-medium">
                   Figures you can trust, trace, and reuse.
                 </p>
-                <div class="flex justify-center mb-16">
-                  <button class="flex items-center justify-center bg-white text-gray-800 font-medium py-3 px-6 rounded-lg text-base shadow-md hover:shadow-lg hover:bg-gray-50 transition-all duration-200 border border-gray-200">
+                <div class="flex justify-center mb-12 sm:mb-16">
+                  <button class="flex items-center justify-center bg-white text-gray-800 font-medium py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base shadow-md hover:shadow-lg hover:bg-gray-50 transition-all duration-200 border border-gray-200">
                     <span class="material-icons mr-2 text-sm">security</span>
                     Submit Data On-Chain
                   </button>
@@ -101,23 +129,23 @@
       </section>
 
       <!-- Dataset Showcase Section -->
-      <section id="upload" class="bg-gray-50 py-20">
-        <div class="max-w-[1200px] mx-auto px-10">
-          <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Dataset Showcases</h2>
-            <p class="text-xl text-gray-600 max-w-[800px] mx-auto">
+      <section id="upload" class="bg-gray-50 py-12 sm:py-16 lg:py-20">
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Dataset Showcases</h2>
+            <p class="text-lg sm:text-xl text-gray-600 max-w-[800px] mx-auto px-4">
               Explore verified scientific visualizations and datasets submitted by researchers worldwide.
             </p>
           </div>
           
           <!-- Dataset Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
             <!-- Dataset 1 -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <div class="aspect-square overflow-hidden">
                 <img src="./assets/single-cell.jpg" alt="Human Skin Wound Healing Single-Cell Analysis" class="w-full h-full object-cover"/>
               </div>
-              <div class="p-4">
+              <div class="p-3 sm:p-4">
                 <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-tight">Human Skin Wound Healing</h3>
                 <p class="text-xs text-gray-600 mb-2">GSE241132 • Homo sapiens</p>
                 <p class="text-xs text-gray-500 mb-3 line-clamp-2">Spatiotemporal Single-Cell Roadmap of Human Skin Wound Healing</p>
@@ -135,7 +163,7 @@
               <div class="aspect-square overflow-hidden">
                 <img src="./assets/fig2-rna seq.jpg" alt="Mouse Skin Wound Healing RNA-seq Analysis" class="w-full h-full object-cover"/>
               </div>
-              <div class="p-4">
+              <div class="p-3 sm:p-4">
                 <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-tight">Mouse Skin Wound Healing</h3>
                 <p class="text-xs text-gray-600 mb-2">GSE190175 • Mus musculus</p>
                 <p class="text-xs text-gray-500 mb-3 line-clamp-2">Single-cell RNA sequencing analysis of healing skin at wound day 11</p>
@@ -153,7 +181,7 @@
               <div class="aspect-square overflow-hidden">
                 <img src="./assets/fig3.jpg" alt="Mouse Cutaneous Wound Healing Analysis" class="w-full h-full object-cover"/>
               </div>
-              <div class="p-4">
+              <div class="p-3 sm:p-4">
                 <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-tight">Mouse Cutaneous Wound Healing</h3>
                 <p class="text-xs text-gray-600 mb-2">E-MTAB-6583 • Mus musculus</p>
                 <p class="text-xs text-gray-500 mb-3 line-clamp-2">Single-cell RNA-seq analysis of cutaneous wound healing in mouse</p>
@@ -171,7 +199,7 @@
               <div class="aspect-square overflow-hidden">
                 <img src="./assets/fig4.jpg" alt="Microbiome Machine Learning Repository" class="w-full h-full object-cover"/>
               </div>
-              <div class="p-4">
+              <div class="p-3 sm:p-4">
                 <h3 class="font-semibold text-gray-900 mb-1 text-sm leading-tight">Microbiome ML Repository</h3>
                 <p class="text-xs text-gray-600 mb-2">MLRepo • Knights Lab</p>
                 <p class="text-xs text-gray-500 mb-3 line-clamp-2">Machine learning repository for microbiome datasets with classification tasks</p>
@@ -186,67 +214,67 @@
           </div>
 
           <!-- View More Section -->
-          <div class="text-center mt-8">
+          <div class="text-center mt-6 sm:mt-8">
             <p class="text-gray-600 mb-4">Showing 4 of 200+ verified datasets</p>
           </div>
         </div>
       </section>
 
       <!-- Main Content -->
-      <div class="px-10 flex flex-1 justify-center py-16">
+      <div class="px-4 sm:px-6 lg:px-10 flex flex-1 justify-center py-12 sm:py-16">
         <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
           
           <!-- Overview Section -->
-          <section class="mb-20">
-            <div class="text-center mb-16">
-              <h2 class="text-4xl font-bold text-gray-900 mb-8">What is SciGraphOS?</h2>
+          <section class="mb-16 sm:mb-20">
+            <div class="text-center mb-12 sm:mb-16">
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">What is SciGraphOS?</h2>
             </div>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
               <div class="text-center">
-                <div class="flex justify-center mb-6">
-                  <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span class="material-icons text-2xl text-teal-600">verified_user</span>
+                <div class="flex justify-center mb-4 sm:mb-6">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <span class="material-icons text-xl sm:text-2xl text-teal-600">verified_user</span>
                   </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Verifiable by Default</h3>
-                <p class="text-gray-600 leading-relaxed">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Verifiable by Default</h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
                   Embedded metadata and on-chain provenance—figures are born traceable.
                 </p>
               </div>
               
               <div class="text-center">
-                <div class="flex justify-center mb-6">
-                  <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span class="material-icons text-2xl text-teal-600">trending_up</span>
+                <div class="flex justify-center mb-4 sm:mb-6">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <span class="material-icons text-xl sm:text-2xl text-teal-600">trending_up</span>
                   </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Agent-Driven Workflow</h3>
-                <p class="text-gray-600 leading-relaxed">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Agent-Driven Workflow</h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
                   Modular AI agents handle charting, QA, and governance with full transparency.
                 </p>
               </div>
               
               <div class="text-center">
-                <div class="flex justify-center mb-6">
-                  <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span class="material-icons text-2xl text-teal-600">hub</span>
+                <div class="flex justify-center mb-4 sm:mb-6">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <span class="material-icons text-xl sm:text-2xl text-teal-600">hub</span>
                   </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">More Efficient Scientific Research</h3>
-                <p class="text-gray-600 leading-relaxed">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">More Efficient Scientific Research</h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
                   Compress figure generation from 3–6 hours to under 3 minutes—without quality loss.
                 </p>
               </div>
               
               <div class="text-center">
-                <div class="flex justify-center mb-6">
-                  <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span class="material-icons text-2xl text-teal-600">assignment_turned_in</span>
+                <div class="flex justify-center mb-4 sm:mb-6">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <span class="material-icons text-xl sm:text-2xl text-teal-600">assignment_turned_in</span>
                   </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Audit-Ready and Attributable</h3>
-                <p class="text-gray-600 leading-relaxed">
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Audit-Ready and Attributable</h3>
+                <p class="text-gray-600 leading-relaxed text-sm sm:text-base">
                   Built-in compliance and on-chain credit—ready for regulators and reuse.
                 </p>
               </div>
@@ -254,79 +282,79 @@
           </section>
 
           <!-- Features Section -->
-          <section id="features" class="mb-20">
-            <h2 class="text-4xl font-bold text-gray-900 text-center mb-4">Core Features</h2>
-            <p class="text-xl text-gray-600 text-center max-w-[800px] mx-auto mb-12">
+          <section id="features" class="mb-16 sm:mb-20">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-3 sm:mb-4">Core Features</h2>
+            <p class="text-lg sm:text-xl text-gray-600 text-center max-w-[800px] mx-auto mb-8 sm:mb-12 px-4">
               Discover the powerful capabilities that make SciGraphOS the future of verifiable scientific visualization.
             </p>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-blue-600 mb-2">
-                  <span class="material-icons text-3xl">blockchain</span>
+                  <span class="material-icons text-2xl sm:text-3xl">blockchain</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">On-Chain Verification</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">On-Chain Verification</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Immutable record-keeping on blockchain ensures data integrity and provides cryptographic proof of authenticity.
                   </p>
                 </div>
               </div>
               
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-green-600 mb-2">
-                  <span class="material-icons text-3xl">visibility</span>
+                  <span class="material-icons text-2xl sm:text-3xl">visibility</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">Transparent Provenance</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">Transparent Provenance</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Complete audit trail from raw data to final visualization with full transparency and reproducibility.
                   </p>
                 </div>
               </div>
               
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-purple-600 mb-2">
-                  <span class="material-icons text-3xl">smart_toy</span>
+                  <span class="material-icons text-2xl sm:text-3xl">smart_toy</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">Agent-Based Processing</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">Agent-Based Processing</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Autonomous agents handle data processing, validation, and visualization generation with minimal human intervention.
                   </p>
                 </div>
               </div>
               
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-orange-600 mb-2">
-                  <span class="material-icons text-3xl">cached</span>
+                  <span class="material-icons text-2xl sm:text-3xl">cached</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">Reusable Components</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">Reusable Components</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Modular visualization components can be easily adapted and reused across different research contexts.
                   </p>
                 </div>
               </div>
               
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-red-600 mb-2">
-                  <span class="material-icons text-3xl">verified_user</span>
+                  <span class="material-icons text-2xl sm:text-3xl">verified_user</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">Trust & Security</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">Trust & Security</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Multi-layer security with cryptographic signatures, peer validation, and consensus mechanisms.
                   </p>
                 </div>
               </div>
               
-              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-6 flex-col hover:shadow-md transition-shadow">
+              <div class="flex flex-1 gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 flex-col hover:shadow-md transition-shadow">
                 <div class="text-indigo-600 mb-2">
-                  <span class="material-icons text-3xl">code</span>
+                  <span class="material-icons text-2xl sm:text-3xl">code</span>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <h3 class="text-gray-900 text-lg font-bold leading-tight">Open Standards</h3>
+                  <h3 class="text-gray-900 text-base sm:text-lg font-bold leading-tight">Open Standards</h3>
                   <p class="text-gray-600 text-sm font-normal leading-normal">
                     Built on open protocols and standards to ensure interoperability and long-term accessibility.
                   </p>
@@ -336,52 +364,52 @@
           </section>
 
           <!-- Architecture Section -->
-          <section id="architecture" class="mb-20">
-            <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-12">
-              <h2 class="text-4xl font-bold text-gray-900 text-center mb-8">System Architecture</h2>
-              <div class="grid md:grid-cols-2 gap-12 items-center">
+          <section id="architecture" class="mb-16 sm:mb-20">
+            <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 sm:p-8 lg:p-12">
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-6 sm:mb-8">System Architecture</h2>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
                 <div>
-                  <h3 class="text-2xl font-semibold text-gray-900 mb-6">Core Components</h3>
-                  <div class="space-y-6">
-                    <div class="flex items-start gap-4">
-                      <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="material-icons text-blue-600 text-sm">link</span>
+                  <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Core Components</h3>
+                  <div class="space-y-4 sm:space-y-6">
+                    <div class="flex items-start gap-3 sm:gap-4">
+                      <div class="w-7 h-7 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span class="material-icons text-blue-600 text-xs sm:text-sm">link</span>
                       </div>
                       <div>
-                        <h4 class="font-semibold text-gray-900 mb-1">Blockchain Layer</h4>
-                        <p class="text-gray-600 text-sm">Immutable ledger for data provenance, verification, and smart contract execution.</p>
+                        <h4 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Blockchain Layer</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm">Immutable ledger for data provenance, verification, and smart contract execution.</p>
                       </div>
                     </div>
                     
-                    <div class="flex items-start gap-4">
-                      <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="material-icons text-green-600 text-sm">psychology</span>
+                    <div class="flex items-start gap-3 sm:gap-4">
+                      <div class="w-7 h-7 sm:w-8 sm:h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span class="material-icons text-green-600 text-xs sm:text-sm">psychology</span>
                       </div>
                       <div>
-                        <h4 class="font-semibold text-gray-900 mb-1">Agent Network</h4>
-                        <p class="text-gray-600 text-sm">Distributed autonomous agents for data processing, validation, and visualization.</p>
+                        <h4 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Agent Network</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm">Distributed autonomous agents for data processing, validation, and visualization.</p>
                       </div>
                     </div>
                     
-                    <div class="flex items-start gap-4">
-                      <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <span class="material-icons text-purple-600 text-sm">storage</span>
+                    <div class="flex items-start gap-3 sm:gap-4">
+                      <div class="w-7 h-7 sm:w-8 sm:h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <span class="material-icons text-purple-600 text-xs sm:text-sm">storage</span>
                       </div>
                       <div>
-                        <h4 class="font-semibold text-gray-900 mb-1">Distributed Storage</h4>
-                        <p class="text-gray-600 text-sm">Decentralized storage system ensuring data availability and redundancy.</p>
+                        <h4 class="font-semibold text-gray-900 mb-1 text-sm sm:text-base">Distributed Storage</h4>
+                        <p class="text-gray-600 text-xs sm:text-sm">Decentralized storage system ensuring data availability and redundancy.</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div class="bg-white rounded-xl p-8 shadow-lg">
+                <div class="bg-white rounded-xl p-6 sm:p-8 shadow-lg mt-6 lg:mt-0">
                   <div class="text-center">
-                    <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                      <span class="material-icons text-white text-4xl">account_tree</span>
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                      <span class="material-icons text-white text-3xl sm:text-4xl">account_tree</span>
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Verification Infrastructure</h4>
-                    <p class="text-gray-600 text-sm">
+                    <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">Verification Infrastructure</h4>
+                    <p class="text-gray-600 text-xs sm:text-sm">
                       Multi-layered verification system combining cryptographic proofs, peer validation, and automated checks.
                     </p>
                   </div>
@@ -391,89 +419,89 @@
           </section>
 
           <!-- Roadmap Section -->
-          <section id="roadmap" class="mb-20">
-            <h2 class="text-4xl font-bold text-gray-900 text-center mb-4">Development Roadmap</h2>
-            <p class="text-xl text-gray-600 text-center max-w-[800px] mx-auto mb-12">
+          <section id="roadmap" class="mb-16 sm:mb-20">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 text-center mb-3 sm:mb-4">Development Roadmap</h2>
+            <p class="text-lg sm:text-xl text-gray-600 text-center max-w-[800px] mx-auto mb-8 sm:mb-12 px-4">
               Our journey towards revolutionizing scientific research through innovative technology.
             </p>
             
-            <div class="grid grid-cols-[40px_1fr] gap-x-6 max-w-4xl mx-auto">
+            <div class="grid grid-cols-[30px_1fr] sm:grid-cols-[40px_1fr] gap-x-4 sm:gap-x-6 max-w-4xl mx-auto">
               <div class="flex flex-col items-center gap-1 pt-3">
-                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span class="material-icons text-blue-600">rocket_launch</span>
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span class="material-icons text-blue-600 text-sm sm:text-base">rocket_launch</span>
                 </div>
-                <div class="w-[2px] bg-gray-300 h-12 grow"></div>
+                <div class="w-[2px] bg-gray-300 h-8 sm:h-12 grow"></div>
               </div>
-              <div class="flex flex-1 flex-col py-3 pb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-xl font-semibold text-gray-900">Phase 1: Foundation</h3>
-                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Q1 2025</span>
+              <div class="flex flex-1 flex-col py-3 pb-6 sm:pb-8">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-0">Phase 1: Foundation</h3>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded self-start">Q1 2025</span>
                   </div>
-                  <p class="text-gray-600">Core knowledge graph engine, basic AI integration, and prototype user interface.</p>
+                  <p class="text-gray-600 text-sm sm:text-base">Core knowledge graph engine, basic AI integration, and prototype user interface.</p>
                 </div>
               </div>
               
               <div class="flex flex-col items-center gap-1">
-                <div class="w-[2px] bg-gray-300 h-6"></div>
-                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <span class="material-icons text-green-600">psychology</span>
+                <div class="w-[2px] bg-gray-300 h-4 sm:h-6"></div>
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <span class="material-icons text-green-600 text-sm sm:text-base">psychology</span>
                 </div>
-                <div class="w-[2px] bg-gray-300 h-12 grow"></div>
+                <div class="w-[2px] bg-gray-300 h-8 sm:h-12 grow"></div>
               </div>
-              <div class="flex flex-1 flex-col py-3 pb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-xl font-semibold text-gray-900">Phase 2: Intelligence</h3>
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Q2 2025</span>
+              <div class="flex flex-1 flex-col py-3 pb-6 sm:pb-8">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-0">Phase 2: Intelligence</h3>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded self-start">Q2 2025</span>
                   </div>
-                  <p class="text-gray-600">Advanced AI capabilities, semantic search, automated discovery features, and research analytics.</p>
+                  <p class="text-gray-600 text-sm sm:text-base">Advanced AI capabilities, semantic search, automated discovery features, and research analytics.</p>
                 </div>
               </div>
               
               <div class="flex flex-col items-center gap-1">
-                <div class="w-[2px] bg-gray-300 h-6"></div>
-                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span class="material-icons text-purple-600">groups</span>
+                <div class="w-[2px] bg-gray-300 h-4 sm:h-6"></div>
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                  <span class="material-icons text-purple-600 text-sm sm:text-base">groups</span>
                 </div>
-                <div class="w-[2px] bg-gray-300 h-12 grow"></div>
+                <div class="w-[2px] bg-gray-300 h-8 sm:h-12 grow"></div>
               </div>
-              <div class="flex flex-1 flex-col py-3 pb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-xl font-semibold text-gray-900">Phase 3: Collaboration</h3>
-                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Q3 2025</span>
+              <div class="flex flex-1 flex-col py-3 pb-6 sm:pb-8">
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-0">Phase 3: Collaboration</h3>
+                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded self-start">Q3 2025</span>
                   </div>
-                  <p class="text-gray-600">Collaborative research tools, real-time editing, team management, and integration ecosystem.</p>
+                  <p class="text-gray-600 text-sm sm:text-base">Collaborative research tools, real-time editing, team management, and integration ecosystem.</p>
                 </div>
               </div>
               
               <div class="flex flex-col items-center gap-1 pb-3">
-                <div class="w-[2px] bg-gray-300 h-6"></div>
-                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span class="material-icons text-orange-600">public</span>
+                <div class="w-[2px] bg-gray-300 h-4 sm:h-6"></div>
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span class="material-icons text-orange-600 text-sm sm:text-base">public</span>
                 </div>
               </div>
               <div class="flex flex-1 flex-col py-3">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-xl font-semibold text-gray-900">Phase 4: Global Scale</h3>
-                    <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Q4 2025</span>
+                <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-1 sm:mb-0">Phase 4: Global Scale</h3>
+                    <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded self-start">Q4 2025</span>
                   </div>
-                  <p class="text-gray-600">Global deployment, enterprise features, advanced security, and comprehensive API ecosystem.</p>
+                  <p class="text-gray-600 text-sm sm:text-base">Global deployment, enterprise features, advanced security, and comprehensive API ecosystem.</p>
                 </div>
               </div>
             </div>
           </section>
 
           <!-- Call to Action -->
-          <section class="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Research?</h2>
-            <p class="text-xl mb-8 text-blue-100 max-w-[600px] mx-auto">
+          <section class="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 sm:p-12 text-white">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Ready to Transform Research?</h2>
+            <p class="text-lg sm:text-xl mb-6 sm:mb-8 text-blue-100 max-w-[600px] mx-auto px-4">
               Join the future of scientific discovery with SciGraphOS. Connect with researchers worldwide and accelerate innovation.
             </p>
             <div class="flex justify-center gap-4">
-              <button class="bg-white text-blue-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors">
+              <button class="bg-white text-blue-600 font-bold py-3 px-6 sm:px-8 rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base">
                 Try Now
               </button>
             </div>
