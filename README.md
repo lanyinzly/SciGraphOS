@@ -1,7 +1,8 @@
 # SciGraphOS
 
 **Agent-Based Infrastructure for Verifiable Scientific Visualization**  
-**Slogan**: *Figures you can trust, trace, and reuse.*
+
+Figures you can trust, trace, and reuse.
 
 ---
 
