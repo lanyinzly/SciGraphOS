@@ -14,6 +14,38 @@ import * as XLSX from 'xlsx';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * Dynamically find the project root directory
+ */
+function findProjectRoot(): string {
+    let currentDir = process.cwd();
+
+    // Special case: if we're currently in packages/cli, go up two levels
+    if (currentDir.endsWith('/packages/cli')) {
+        const projectRoot = path.dirname(path.dirname(currentDir));
+        console.log(`🔍 Found project root from packages/cli: ${projectRoot}`);
+        return projectRoot;
+    }
+
+    // Walk up the directory tree to find the project root
+    while (currentDir !== path.dirname(currentDir)) {
+        // Check if this directory contains package.json and packages/cli
+        const packageJsonPath = path.join(currentDir, 'package.json');
+        const cliPackagePath = path.join(currentDir, 'packages', 'cli');
+
+        if (fs.existsSync(packageJsonPath) && fs.existsSync(cliPackagePath)) {
+            console.log(`🔍 Found project root: ${currentDir}`);
+            return currentDir;
+        }
+
+        currentDir = path.dirname(currentDir);
+    }
+
+    // Final fallback: use current working directory
+    console.log(`🔍 Using fallback project root: ${process.cwd()}`);
+    return process.cwd();
+}
+
 // File path resolution function
 function getFilePathFromAttachment(attachment: any): string | null {
     console.log(`🔍 Resolving file path: ${attachment.url} -> ...`);
@@ -258,7 +290,7 @@ Return format:
         console.log('📊 Final chart config using Excel data:', JSON.stringify(chartConfig, null, 2));
 
         // Use ElizaOS standard directory structure
-        const projectRoot = '/Volumes/Code/Projects/AI/blockSeq';
+        const projectRoot = findProjectRoot();
         const cliRoot = path.join(projectRoot, 'packages/cli');
         const chartDir = path.join(cliRoot, 'generated-html');
         const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');

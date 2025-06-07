@@ -2,6 +2,38 @@ import { Route } from '@elizaos/core';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * Dynamically find the project root directory
+ */
+function findProjectRoot(): string {
+    let currentDir = process.cwd();
+
+    // Special case: if we're currently in packages/cli, go up two levels
+    if (currentDir.endsWith('/packages/cli')) {
+        const projectRoot = path.dirname(path.dirname(currentDir));
+        console.log(`🔍 Found project root from packages/cli: ${projectRoot}`);
+        return projectRoot;
+    }
+
+    // Walk up the directory tree to find the project root
+    while (currentDir !== path.dirname(currentDir)) {
+        // Check if this directory contains package.json and packages/cli
+        const packageJsonPath = path.join(currentDir, 'package.json');
+        const cliPackagePath = path.join(currentDir, 'packages', 'cli');
+
+        if (fs.existsSync(packageJsonPath) && fs.existsSync(cliPackagePath)) {
+            console.log(`🔍 Found project root: ${currentDir}`);
+            return currentDir;
+        }
+
+        currentDir = path.dirname(currentDir);
+    }
+
+    // Final fallback: use current working directory
+    console.log(`🔍 Using fallback project root: ${process.cwd()}`);
+    return process.cwd();
+}
+
 export const excelRoutes: Route[] = [
     {
         type: 'GET',
@@ -12,7 +44,7 @@ export const excelRoutes: Route[] = [
                 const { sessionId } = req.params;
 
                 // Read file relationships database
-                const projectRoot = '/Volumes/Code/Projects/AI/blockSeq';
+                const projectRoot = findProjectRoot();
                 const cliRoot = path.join(projectRoot, 'packages/cli');
                 const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');
 
@@ -55,7 +87,7 @@ export const excelRoutes: Route[] = [
         handler: async (req, res, runtime) => {
             try {
                 // Read file relationships database
-                const projectRoot = '/Volumes/Code/Projects/AI/blockSeq';
+                const projectRoot = findProjectRoot();
                 const cliRoot = path.join(projectRoot, 'packages/cli');
                 const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');
 

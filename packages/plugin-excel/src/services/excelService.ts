@@ -3,6 +3,38 @@ import fs from 'fs';
 import path from 'path';
 import { IAgentRuntime, Service } from '@elizaos/core';
 
+/**
+ * Dynamically find the project root directory
+ */
+function findProjectRoot(): string {
+    let currentDir = process.cwd();
+
+    // Special case: if we're currently in packages/cli, go up two levels
+    if (currentDir.endsWith('/packages/cli')) {
+        const projectRoot = path.dirname(path.dirname(currentDir));
+        console.log(`🔍 Found project root from packages/cli: ${projectRoot}`);
+        return projectRoot;
+    }
+
+    // Walk up the directory tree to find the project root
+    while (currentDir !== path.dirname(currentDir)) {
+        // Check if this directory contains package.json and packages/cli
+        const packageJsonPath = path.join(currentDir, 'package.json');
+        const cliPackagePath = path.join(currentDir, 'packages', 'cli');
+
+        if (fs.existsSync(packageJsonPath) && fs.existsSync(cliPackagePath)) {
+            console.log(`🔍 Found project root: ${currentDir}`);
+            return currentDir;
+        }
+
+        currentDir = path.dirname(currentDir);
+    }
+
+    // Final fallback: use current working directory
+    console.log(`🔍 Using fallback project root: ${process.cwd()}`);
+    return process.cwd();
+}
+
 export class ExcelService extends Service {
     static serviceType = 'excel';
     capabilityDescription = 'The agent is able to read and analyze Excel files and extract their content for AI processing';
@@ -44,7 +76,7 @@ export class ExcelService extends Service {
 
             if (!fs.existsSync(absolutePath)) {
                 // Try alternative path resolution - from project root
-                const alternativePath = path.resolve('/Volumes/Code/Projects/AI/blockSeq', filePath);
+                const alternativePath = path.resolve(findProjectRoot(), filePath);
                 if (fs.existsSync(alternativePath)) {
                     absolutePath = alternativePath;
                 } else {
@@ -113,7 +145,7 @@ export class ExcelService extends Service {
 
             if (!fs.existsSync(absolutePath)) {
                 // Try alternative path resolution - from project root
-                const alternativePath = path.resolve('/Volumes/Code/Projects/AI/blockSeq', filePath);
+                const alternativePath = path.resolve(findProjectRoot(), filePath);
                 if (fs.existsSync(alternativePath)) {
                     absolutePath = alternativePath;
                 } else {
@@ -231,7 +263,7 @@ export class ExcelService extends Service {
 
             if (!fs.existsSync(absolutePath)) {
                 // Try alternative path resolution - from project root
-                const alternativePath = path.resolve('/Volumes/Code/Projects/AI/blockSeq', filePath);
+                const alternativePath = path.resolve(findProjectRoot(), filePath);
                 if (fs.existsSync(alternativePath)) {
                     absolutePath = alternativePath;
                 } else {
