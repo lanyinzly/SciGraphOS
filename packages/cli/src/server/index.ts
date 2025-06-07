@@ -50,20 +50,31 @@ const AGENT_RUNTIME_URL =
 
 // Gallery HTML generation function
 function generateGalleryHtml(charts: any[]): string {
-  const chartCards = charts.map(chart => `
+  const chartCards = charts.map((chart, index) => `
     <div class="chart-card">
       <div class="chart-header">
         <h3>${chart.title}</h3>
         <span class="chart-type ${chart.type}">${chart.type.toUpperCase()}</span>
       </div>
       <div class="chart-preview">
-        <iframe src="${chart.url}" width="100%" height="300" frameborder="0"></iframe>
+        <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+          ${chart.chartContainer ? chart.chartContainer.replace(/id="myChart"/g, `id="chart-${index}"`) : '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">Chart failed to load</div>'}
+        </div>
       </div>
       <div class="chart-footer">
         <span class="chart-date">${new Date(chart.created).toLocaleString()}</span>
         <a href="${chart.url}" target="_blank" class="view-btn">View Full Chart</a>
       </div>
     </div>
+    ${chart.scriptContent ? `<script>
+      (function() {
+        try {
+          ${chart.scriptContent.replace(/getElementById\(['"]myChart['"]\)/g, `getElementById('chart-${index}')`)}
+        } catch (e) {
+          console.warn('Chart ${index} failed to load:', e);
+        }
+      })();
+    </script>` : ''}
   `).join('');
 
   return `<!DOCTYPE html>
@@ -71,7 +82,8 @@ function generateGalleryHtml(charts: any[]): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart Gallery - ElizaOS</title>
+    <title>Excel Chart Gallery - ElizaOS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -105,6 +117,7 @@ function generateGalleryHtml(charts: any[]): string {
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
             transition: transform 0.2s ease;
+            border-left: 4px solid #27ae60;
         }
         .chart-card:hover {
             transform: translateY(-5px);
@@ -145,9 +158,27 @@ function generateGalleryHtml(charts: any[]): string {
             background: #9b59b6;
             color: white;
         }
+        .chart-type.excel {
+            background: #27ae60;
+            color: white;
+        }
+        .chart-type.unknown {
+            background: #95a5a6;
+            color: white;
+        }
         .chart-preview {
             height: 300px;
             overflow: hidden;
+            padding: 10px;
+            background: #fafafa;
+        }
+        .chart-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .chart-container canvas {
+            max-width: 100% !important;
+            max-height: 100% !important;
         }
         .chart-footer {
             padding: 15px 20px;
@@ -161,7 +192,7 @@ function generateGalleryHtml(charts: any[]): string {
             font-size: 14px;
         }
         .view-btn {
-            background: #3498db;
+            background: #27ae60;
             color: white;
             padding: 8px 16px;
             border-radius: 4px;
@@ -170,7 +201,7 @@ function generateGalleryHtml(charts: any[]): string {
             transition: background 0.2s ease;
         }
         .view-btn:hover {
-            background: #2980b9;
+            background: #219a52;
         }
         .empty-state {
             text-align: center;
@@ -206,7 +237,7 @@ function generateGalleryHtml(charts: any[]): string {
         .stat-number {
             font-size: 24px;
             font-weight: bold;
-            color: #3498db;
+            color: #27ae60;
         }
         .stat-label {
             font-size: 14px;
@@ -217,8 +248,8 @@ function generateGalleryHtml(charts: any[]): string {
 </head>
 <body>
     <div class="header">
-        <h1>📊 Chart Gallery</h1>
-        <p>AI-generated charts from your Excel data</p>
+        <h1>📊 Excel Chart Gallery</h1>
+        <p>AI-generated Excel data charts</p>
     </div>
     
     ${charts.length > 0 ? `
@@ -253,8 +284,8 @@ function generateGalleryHtml(charts: any[]): string {
     </div>
     ` : `
     <div class="empty-state">
-        <h2>No Charts Yet</h2>
-        <p>Upload an Excel file to generate your first chart!</p>
+        <h2>No Charts Available</h2>
+        <p>Upload Excel files to generate your first chart!</p>
     </div>
     `}
 </body>
@@ -560,48 +591,68 @@ export class AgentServer {
         }
       });
 
-      // Setup chart gallery endpoint
+      // Setup chart gallery endpoint - Excel charts only
       this.app.get('/gallery', (req: any, res: any) => {
         try {
-          const dataDir = path.join(process.cwd(), 'data');
-          const altDataDir = path.join(process.cwd(), 'packages', 'cli', 'data');
+          const allCharts: any[] = [];
 
-          let chartsDir = dataDir;
-          if (!fs.existsSync(dataDir) && fs.existsSync(altDataDir)) {
-            chartsDir = altDataDir;
+
+          const projectRoot = process.cwd();
+          const cliRoot = projectRoot.endsWith('/packages/cli') ? projectRoot : path.join(projectRoot, 'packages/cli');
+          const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');
+          const excelChartDir = path.join(cliRoot, 'generated-html');
+
+          if (fs.existsSync(relationshipDbPath) && fs.existsSync(excelChartDir)) {
+            try {
+              const relationships = JSON.parse(fs.readFileSync(relationshipDbPath, 'utf8'));
+
+              const excelCharts = Object.entries(relationships).map(([sessionId, chartInfo]: [string, any]) => {
+                if (!chartInfo.html) return null;
+
+                const htmlPath = path.join(excelChartDir, chartInfo.html.fileName);
+                if (!fs.existsSync(htmlPath)) return null;
+
+                const stats = fs.statSync(htmlPath);
+                const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+
+                // Extract title and type from Excel chart HTML
+                const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/);
+                const title = titleMatch ? titleMatch[1] : `Excel Chart - ${sessionId.substring(0, 8)}`;
+                const typeMatch = htmlContent.match(/"type"\s*:\s*"([^"]+)"/);
+                const type = typeMatch ? typeMatch[1] : 'excel';
+
+                // Extract chart container content
+                const chartContainerMatch = htmlContent.match(/<div class="chart-container"[^>]*>([\s\S]*?)<\/div>/);
+                const chartContainer = chartContainerMatch ? chartContainerMatch[1] : '';
+
+                // Extract JavaScript content (Chart.js initialization)
+                const scriptMatch = htmlContent.match(/<script>([\s\S]*?)<\/script>/);
+                const scriptContent = scriptMatch ? scriptMatch[1] : '';
+
+                return {
+                  id: sessionId,
+                  title: title,
+                  type: type,
+                  url: `/view/${sessionId}`,
+                  created: stats.mtime.toISOString(),
+                  chartContainer: chartContainer,
+                  scriptContent: scriptContent
+                };
+              }).filter(Boolean);
+
+              allCharts.push(...excelCharts);
+              logger.debug(`[GALLERY] Found ${excelCharts.length} Excel charts`);
+            } catch (error) {
+              logger.warn('Failed to load Excel charts for gallery:', error);
+            }
           }
 
-          if (!fs.existsSync(chartsDir)) {
-            return res.send(generateGalleryHtml([]));
-          }
+          // 按创建时间排序（最新的在前）
+          allCharts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
 
-          const chartFiles = fs.readdirSync(chartsDir)
-            .filter(file => file.startsWith('chart-') && file.endsWith('.html'))
-            .map(file => {
-              const chartId = file.replace('.html', '');
-              const filePath = path.join(chartsDir, file);
-              const stats = fs.statSync(filePath);
+          logger.debug(`[GALLERY] Total Excel charts: ${allCharts.length}`);
 
-              // Extract title from HTML file
-              const htmlContent = fs.readFileSync(filePath, 'utf8');
-              const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/);
-              const title = titleMatch ? titleMatch[1] : chartId;
-
-              // Extract chart type from HTML
-              const typeMatch = htmlContent.match(/"type":"([^"]+)"/);
-              const type = typeMatch ? typeMatch[1] : 'unknown';
-
-              return {
-                id: chartId,
-                title: title,
-                type: type,
-                url: `/api/charts/${chartId}`,
-                created: stats.mtime.toISOString()
-              };
-            })
-            .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-
-          const galleryHtml = generateGalleryHtml(chartFiles);
+          const galleryHtml = generateGalleryHtml(allCharts);
           res.setHeader('Content-Type', 'text/html');
           res.send(galleryHtml);
         } catch (error) {
@@ -610,7 +661,89 @@ export class AgentServer {
         }
       });
 
-      logger.debug('Chart API and Gallery endpoints registered successfully');
+      // Add Excel chart view endpoint for /view/:sessionId
+      this.app.get('/view/:sessionId', (req: any, res: any) => {
+        try {
+          const { sessionId } = req.params;
+
+          // Read file relationships database to get chart info
+          const projectRoot = process.cwd();
+          const cliRoot = projectRoot.endsWith('/packages/cli') ? projectRoot : path.join(projectRoot, 'packages/cli');
+          const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');
+
+          logger.debug(`[VIEW] Looking for relationships file: ${relationshipDbPath}`);
+
+          if (!fs.existsSync(relationshipDbPath)) {
+            logger.warn(`[VIEW] Relationships file not found: ${relationshipDbPath}`);
+            return res.status(404).send(`
+              <html>
+                <head><title>Chart Not Found</title></head>
+                <body>
+                  <h1>Chart Not Found</h1>
+                  <p>Session ID: ${sessionId}</p>
+                  <p>Relationships file not found: ${relationshipDbPath}</p>
+                </body>
+              </html>
+            `);
+          }
+
+          const relationships = JSON.parse(fs.readFileSync(relationshipDbPath, 'utf8'));
+          const chartInfo = relationships[sessionId];
+
+          if (!chartInfo || !chartInfo.html) {
+            logger.warn(`[VIEW] Chart not found for session ${sessionId}`, { availableSessions: Object.keys(relationships) });
+            return res.status(404).send(`
+              <html>
+                <head><title>Chart Not Found</title></head>
+                <body>
+                  <h1>Chart Not Found</h1>
+                  <p>Session ID: ${sessionId}</p>
+                  <p>Available sessions: ${Object.keys(relationships).join(', ') || 'none'}</p>
+                </body>
+              </html>
+            `);
+          }
+
+          // Serve the HTML file
+          const chartDir = path.join(cliRoot, 'generated-html');
+          const htmlPath = path.join(chartDir, chartInfo.html.fileName);
+
+          logger.debug(`[VIEW] Looking for chart file: ${htmlPath}`);
+
+          if (!fs.existsSync(htmlPath)) {
+            logger.error(`[VIEW] Chart file not found: ${htmlPath}`);
+            return res.status(404).send(`
+              <html>
+                <head><title>Chart File Not Found</title></head>
+                <body>
+                  <h1>Chart File Not Found</h1>
+                  <p>Session ID: ${sessionId}</p>
+                  <p>Expected path: ${htmlPath}</p>
+                </body>
+              </html>
+            `);
+          }
+
+          const htmlContent = fs.readFileSync(htmlPath, 'utf8');
+          res.setHeader('Content-Type', 'text/html');
+          res.send(htmlContent);
+
+          logger.debug(`[VIEW] Successfully served chart for session ${sessionId}`);
+        } catch (error) {
+          logger.error('Error serving chart view:', error);
+          res.status(500).send(`
+            <html>
+              <head><title>Server Error</title></head>
+              <body>
+                <h1>Internal Server Error</h1>
+                <p>Error serving chart: ${error.message}</p>
+              </body>
+            </html>
+          `);
+        }
+      });
+
+      logger.debug('Chart API, Gallery, and View endpoints registered successfully');
 
       // Add a catch-all route for API 404s
       this.app.use((req, res, next) => {
