@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel数据图表 - fa1ea513-cd97-4de1-b199-d2f29cd89a1a</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .chart-container {
+            position: relative;
+            height: 500px;
+            margin: 30px 0;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        .session-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Excel数据可视化</h1>
+            <div class="session-info">
+                <strong>会话ID:</strong> fa1ea513-cd97-4de1-b199-d2f29cd89a1a<br>
+                <strong>生成时间:</strong> 6/7/2025, 10:30:47 AM<br>
+                <strong>数据行数:</strong> 6
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="data-table">
+            <h3>📋 原始数据</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>类别</th><th>数值</th><th>描述</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>产品A</td><td>120</td><td>热销产品</td></tr><tr><td>产品B</td><td>85</td><td>稳定销量</td></tr><tr><td>产品C</td><td>95</td><td>新品推广</td></tr><tr><td>产品D</td><td>140</td><td>爆款产品</td></tr><tr><td>产品E</td><td>60</td><td>待提升</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const data = [["类别","数值","描述"],["产品A",120,"热销产品"],["产品B",85,"稳定销量"],["产品C",95,"新品推广"],["产品D",140,"爆款产品"],["产品E",60,"待提升"]];
+        
+        // 处理数据
+        const labels = data.slice(1).map((row, index) => row[0] || `行${index + 1}`);
+        const values = data.slice(1).map(row => parseFloat(row[1]) || 0);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: data[0] ? data[0][1] || '数值' : '数值',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '📊 Excel数据可视化'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

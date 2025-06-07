@@ -8,16 +8,16 @@ import {
 export const chartResultEvaluator: Evaluator = {
     name: 'CHART_RESULT',
     similes: ['CHART_RESPONSE', 'CHART_OUTPUT'],
-    description: '处理图表生成结果并返回给用户',
+    description: 'Process chart generation results and return to user',
     validate: async (runtime: IAgentRuntime, message: Memory, state?: State): Promise<boolean> => {
-        // 检查state中是否有图表生成结果
+        // Check if state contains chart generation results
         return Boolean(state?.chartResult);
     },
     handler: async (runtime: IAgentRuntime, message: Memory, state?: State): Promise<any> => {
         if (state?.chartResult) {
             const result = state.chartResult;
 
-            // 清除state中的结果，避免重复处理
+            // Clear results from state to avoid duplicate processing
             delete state.chartResult;
 
             return {

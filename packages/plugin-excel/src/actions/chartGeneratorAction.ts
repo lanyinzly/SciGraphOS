@@ -13,33 +13,33 @@ import * as XLSX from 'xlsx';
 import fs from 'fs';
 import path from 'path';
 
-// 图表生成函数
+// Chart generation function
 const generateChart = async (
     excelData: any[][],
     sessionId: string,
     dataDir: string
 ): Promise<string> => {
     try {
-        logger.info('📊 开始生成图表...', { sessionId, dataRows: excelData.length });
+        logger.info('📊 Starting chart generation...', { sessionId, dataRows: excelData.length });
 
-        // 使用ElizaOS的标准目录结构
+        // Use ElizaOS standard directory structure
         const projectRoot = '/Volumes/Code/Projects/AI/blockSeq';
         const cliRoot = path.join(projectRoot, 'packages/cli');
         const chartDir = path.join(cliRoot, 'generated-html');
         const relationshipDbPath = path.join(cliRoot, 'file-relationships.json');
 
-        // 确保目录存在
+        // Ensure directory exists
         if (!fs.existsSync(chartDir)) {
             fs.mkdirSync(chartDir, { recursive: true });
         }
 
-        // 生成HTML内容
+        // Generate HTML content
         const htmlContent = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel数据图表 - ${sessionId}</title>
+    <title>Excel Data Chart - ${sessionId}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -109,11 +109,11 @@ const generateChart = async (
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Excel数据可视化</h1>
+            <h1>📊 Excel Data Visualization</h1>
             <div class="session-info">
-                <strong>会话ID:</strong> ${sessionId}<br>
-                <strong>生成时间:</strong> ${new Date().toLocaleString()}<br>
-                <strong>数据行数:</strong> ${excelData.length}
+                <strong>Session ID:</strong> ${sessionId}<br>
+                <strong>Generated:</strong> ${new Date().toLocaleString()}<br>
+                <strong>Data Rows:</strong> ${excelData.length}
             </div>
         </div>
 
@@ -122,7 +122,7 @@ const generateChart = async (
         </div>
 
         <div class="data-table">
-            <h3>📋 原始数据</h3>
+            <h3>📋 Raw Data</h3>
             <table>
                 <thead>
                     <tr>
@@ -142,8 +142,8 @@ const generateChart = async (
         const ctx = document.getElementById('myChart').getContext('2d');
         const data = ${JSON.stringify(excelData)};
         
-        // 处理数据
-        const labels = data.slice(1).map((row, index) => row[0] || \`行\${index + 1}\`);
+        // Process data
+        const labels = data.slice(1).map((row, index) => row[0] || \`Row\${index + 1}\`);
         const values = data.slice(1).map(row => parseFloat(row[1]) || 0);
         
         new Chart(ctx, {
@@ -151,7 +151,7 @@ const generateChart = async (
             data: {
                 labels: labels,
                 datasets: [{
-                    label: data[0] ? data[0][1] || '数值' : '数值',
+                    label: data[0] ? data[0][1] || 'Value' : 'Value',
                     data: values,
                     backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -169,7 +169,7 @@ const generateChart = async (
                 plugins: {
                     title: {
                         display: true,
-                        text: '📊 Excel数据可视化'
+                        text: '📊 Excel Data Visualization'
                     }
                 }
             }
@@ -178,14 +178,14 @@ const generateChart = async (
 </body>
 </html>`;
 
-        // 生成文件名
+        // Generate file name
         const htmlFileName = `chart-${sessionId}.html`;
         const htmlPath = path.join(chartDir, htmlFileName);
 
-        // 保存HTML文件
+        // Save HTML file
         fs.writeFileSync(htmlPath, htmlContent, 'utf8');
 
-        // 更新文件关系数据库
+        // Update file relationships database
         let relationships = {};
         try {
             if (fs.existsSync(relationshipDbPath)) {
@@ -193,10 +193,10 @@ const generateChart = async (
                 relationships = JSON.parse(data);
             }
         } catch (error) {
-            logger.warn('无法读取文件关系数据库，创建新的:', error);
+            logger.warn('Unable to read file relationships database, creating new one:', error);
         }
 
-        // 添加新的关系记录
+        // Add new relationship record
         relationships[sessionId] = {
             sessionId,
             html: {
@@ -204,7 +204,7 @@ const generateChart = async (
                 chartType: 'bar'
             },
             excel: {
-                original: 'Excel数据',
+                original: 'Excel Data',
                 processed: true
             },
             metadata: {
@@ -213,14 +213,14 @@ const generateChart = async (
             }
         };
 
-        // 保存更新的关系数据库
+        // Save updated relationships database
         fs.writeFileSync(relationshipDbPath, JSON.stringify(relationships, null, 2), 'utf8');
 
-        logger.info('✅ 图表HTML文件已生成', { htmlPath, relationshipDbPath });
+        logger.info('✅ Chart HTML file generated successfully', { htmlPath, relationshipDbPath });
         return htmlPath;
 
     } catch (error) {
-        logger.error('❌ 图表生成失败:', error);
+        logger.error('❌ Chart generation failed:', error);
         throw error;
     }
 };
@@ -228,26 +228,26 @@ const generateChart = async (
 export const chartGeneratorAction: Action = {
     name: 'GENERATE_CHART',
     similes: ['CREATE_CHART', 'CHART_GENERATION', 'EXCEL_CHART', 'DATA_VISUALIZATION'],
-    description: '根据Excel文件生成数据图表',
+    description: 'Generate data charts based on Excel files',
 
     validate: async (runtime: IAgentRuntime, message: Memory, state?: State): Promise<boolean> => {
         try {
-            logger.info('🔍 验证图表生成请求...', {
+            logger.info('🔍 Validating chart generation request...', {
                 messageId: message.id,
                 content: message.content
             });
 
-            // 检查多个可能的文本字段
+            // Check multiple possible text fields
             const textContent = message.content.text || message.content.content || '';
             const text = typeof textContent === 'string' ? textContent.toLowerCase() : '';
-            logger.info('📝 检查的文本内容:', { text });
+            logger.info('📝 Checking text content:', { text });
 
-            // 检查是否包含图表相关关键词
+            // Check if contains chart-related keywords
             const chartKeywords = ['图表', 'chart', '可视化', 'visualization', '生成', 'generate'];
             const matchedKeywords = chartKeywords.filter(keyword => text.includes(keyword));
             const hasChartKeyword = matchedKeywords.length > 0;
 
-            logger.info('🔍 关键词匹配结果:', {
+            logger.info('🔍 Keyword matching results:', {
                 chartKeywords,
                 matchedKeywords,
                 hasChartKeyword,
@@ -255,14 +255,14 @@ export const chartGeneratorAction: Action = {
             });
 
             if (hasChartKeyword) {
-                logger.info('✅ 图表生成action验证通过');
+                logger.info('✅ Chart generation action validation passed');
                 return true;
             } else {
-                logger.info('❌ 图表生成action验证失败 - 未找到匹配关键词');
+                logger.info('❌ Chart generation action validation failed - no matching keywords found');
                 return false;
             }
         } catch (error) {
-            logger.error('❌ 图表生成action验证失败:', error);
+            logger.error('❌ Chart generation action validation failed:', error);
             return false;
         }
     },
@@ -278,32 +278,32 @@ export const chartGeneratorAction: Action = {
         try {
             logger.info('📊 Chart generator action triggered!');
 
-            // 生成会话ID
+            // Generate session ID
             const sessionId = uuidv4();
             logger.info('🆔 Generated session ID:', sessionId);
 
-            // 设置数据目录
+            // Set up data directory
             const dataDir = path.join(process.cwd(), 'packages/cli/data');
             if (!fs.existsSync(dataDir)) {
                 fs.mkdirSync(dataDir, { recursive: true });
             }
 
-            // 模拟Excel数据（实际应用中应该从文件读取）
+            // Sample Excel data (should read from file in real application)
             const excelData = [
-                ['类别', '数值', '描述'],
-                ['产品A', 120, '热销产品'],
-                ['产品B', 85, '稳定销量'],
-                ['产品C', 95, '新品推广'],
-                ['产品D', 140, '爆款产品'],
-                ['产品E', 60, '待提升']
+                ['Category', 'Value', 'Description'],
+                ['Product A', 120, 'Hot selling product'],
+                ['Product B', 85, 'Stable sales'],
+                ['Product C', 95, 'New product promotion'],
+                ['Product D', 140, 'Best seller'],
+                ['Product E', 60, 'Needs improvement']
             ];
 
             logger.info('📊 Processing Excel data:', { rows: excelData.length });
 
-            // 生成图表
+            // Generate chart
             const chartPath = await generateChart(excelData, sessionId, dataDir);
 
-            // 生成访问链接
+            // Generate access URL
             const viewUrl = `http://localhost:3000/view/${sessionId}`;
 
             logger.info('🔗 Chart generated successfully:', {
@@ -312,12 +312,12 @@ export const chartGeneratorAction: Action = {
                 viewUrl
             });
 
-            // 构造响应内容 - 使用用户指定的正确格式
-            const responseText = `🖼️ 查看图表: http://localhost:3000/view/${sessionId}
-📄 下载图片: http://localhost:3000/images/${sessionId}.png
-🎯 图表库: http://localhost:3000/gallery`;
+            // Construct response content - use user specified correct format
+            const responseText = `🖼️ View chart: http://localhost:3000/view/${sessionId}
+📄 Download image: http://localhost:3000/images/${sessionId}.png
+🎯 Chart gallery: http://localhost:3000/gallery`;
 
-            // 调用callback返回结果
+            // Call callback to return result
             if (callback) {
                 logger.info('📤 Calling callback with chart response');
                 await callback({
@@ -330,7 +330,7 @@ export const chartGeneratorAction: Action = {
 
             logger.info('✅ Chart generation completed successfully');
 
-            // 返回Content对象 - 这是关键！
+            // Return Content object - this is key!
             return {
                 text: responseText,
                 actions: ['GENERATE_CHART'],
@@ -340,19 +340,19 @@ export const chartGeneratorAction: Action = {
         } catch (error) {
             logger.error('❌ Chart generation failed:', error);
 
-            // 错误回调
+            // Error callback
             if (callback) {
                 await callback({
-                    text: '❌ 抱歉，图表生成过程中出现错误。请稍后重试。',
+                    text: '❌ Sorry, an error occurred during chart generation. Please try again later.',
                     actions: ['GENERATE_CHART_ERROR'],
                     source: message.content.source,
                 });
                 logger.info('✅ Error callback completed');
             }
 
-            // 返回错误内容
+            // Return error content
             return {
-                text: '❌ 抱歉，图表生成过程中出现错误。请稍后重试。',
+                text: '❌ Sorry, an error occurred during chart generation. Please try again later.',
                 actions: ['GENERATE_CHART_ERROR'],
                 source: message.content.source,
             };
@@ -362,30 +362,30 @@ export const chartGeneratorAction: Action = {
     examples: [
         [
             {
-                name: '用户',
+                name: 'User',
                 content: {
-                    text: '请为我的Excel数据生成图表',
+                    text: 'Please generate a chart for my Excel data',
                 },
             },
             {
-                name: 'AI助手',
+                name: 'Assistant',
                 content: {
-                    text: '我将为您的Excel数据生成可视化图表。',
+                    text: 'I will generate a visualization chart for your Excel data.',
                     actions: ['GENERATE_CHART'],
                 },
             },
         ],
         [
             {
-                name: '用户',
+                name: 'User',
                 content: {
-                    text: '能帮我创建一个数据可视化图表吗？',
+                    text: 'Can you help me create a data visualization chart?',
                 },
             },
             {
-                name: 'AI助手',
+                name: 'Assistant',
                 content: {
-                    text: '当然可以！我会分析您的数据并创建图表。',
+                    text: 'Of course! I will analyze your data and create a chart.',
                     actions: ['GENERATE_CHART'],
                 },
             },

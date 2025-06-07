@@ -8,9 +8,9 @@ import {
 
 export const chartResultProvider: Provider = {
     name: 'chartResult',
-    description: '提供图表生成的结果',
+    description: 'Provides chart generation results',
     get: async (runtime: IAgentRuntime, message: Memory, state: State): Promise<ProviderResult> => {
-        // 检查state中是否有图表生成结果
+        // Check if there are chart generation results in state
         if (state?.chartGenerated && state?.chartResponse) {
             console.log('📊 Chart result provider: returning chart response');
 

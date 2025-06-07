@@ -15,6 +15,7 @@ const baseCharacter: Character = {
     '@elizaos/plugin-twitter',
     '@elizaos/plugin-telegram',
     '@elizaos/plugin-bootstrap',
+    '@elizaos/plugin-excel',
   ],
   secrets: {},
   system:
@@ -200,6 +201,7 @@ const baseCharacter: Character = {
 export function getElizaCharacter(): Character {
   const plugins = [
     '@elizaos/plugin-sql',
+    '@elizaos/plugin-excel', // Always include Excel plugin
     ...(process.env.ANTHROPIC_API_KEY ? ['@elizaos/plugin-anthropic'] : []),
     ...(process.env.OPENAI_API_KEY ? ['@elizaos/plugin-openai', '@elizaos/plugin-knowledge'] : []),
     ...(!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY

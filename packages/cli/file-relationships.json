@@ -1,0 +1,47 @@
+{
+  "23c1d1df-88ba-494e-b36f-6cd00e3cd2cc": {
+    "sessionId": "23c1d1df-88ba-494e-b36f-6cd00e3cd2cc",
+    "html": {
+      "fileName": "chart-23c1d1df-88ba-494e-b36f-6cd00e3cd2cc.html",
+      "chartType": "bar"
+    },
+    "excel": {
+      "original": "Excel数据",
+      "processed": true
+    },
+    "metadata": {
+      "createdAt": "2025-06-07T02:17:21.519Z",
+      "dataRows": 6
+    }
+  },
+  "e8d4c9cd-df21-4a7b-87cd-969c8ecfb146": {
+    "sessionId": "e8d4c9cd-df21-4a7b-87cd-969c8ecfb146",
+    "html": {
+      "fileName": "chart-e8d4c9cd-df21-4a7b-87cd-969c8ecfb146.html",
+      "chartType": "bar"
+    },
+    "excel": {
+      "original": "Excel数据",
+      "processed": true
+    },
+    "metadata": {
+      "createdAt": "2025-06-07T02:29:46.525Z",
+      "dataRows": 6
+    }
+  },
+  "fa1ea513-cd97-4de1-b199-d2f29cd89a1a": {
+    "sessionId": "fa1ea513-cd97-4de1-b199-d2f29cd89a1a",
+    "html": {
+      "fileName": "chart-fa1ea513-cd97-4de1-b199-d2f29cd89a1a.html",
+      "chartType": "bar"
+    },
+    "excel": {
+      "original": "Excel数据",
+      "processed": true
+    },
+    "metadata": {
+      "createdAt": "2025-06-07T02:30:47.244Z",
+      "dataRows": 6
+    }
+  }
+}

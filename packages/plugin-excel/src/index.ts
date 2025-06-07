@@ -44,11 +44,11 @@ export const excelPlugin: Plugin = {
         if (!hasChartAction) {
             console.log('⚠️ chartGeneratorAction not found, manually registering...');
             try {
-                // 手动注册action
+                // Manually register action
                 runtime.actions.push(chartGeneratorAction);
                 console.log('✅ Manually registered chartGeneratorAction');
 
-                // 再次检查
+                // Check again
                 const hasChartActionAfter = runtime.actions.some(a => a.name === 'GENERATE_CHART');
                 console.log('🔍 GENERATE_CHART action found after manual registration:', hasChartActionAfter);
             } catch (error) {
